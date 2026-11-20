@@ -17,22 +17,6 @@
           fontFamily: {
             sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
           },
-          colors: {
-            clinical: {
-              bg: '#E5E5EA',
-              card: '#FFFFFF',
-              soft: '#F2F2F7',
-              border: '#E5E7EB',
-              ink: '#0F172A',
-              muted: '#64748B',
-              blue: '#2563EB',
-              blueDark: '#1D4ED8',
-              teal: '#0D9488',
-              coral: '#EF4444',
-              amber: '#F59E0B',
-              emerald: '#10B981',
-            }
-          },
           boxShadow: {
             card: '0 6px 24px -6px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04)',
             float: '0 20px 50px -12px rgba(15, 23, 42, 0.25)',
@@ -78,7 +62,7 @@
 
   <div id="appShell" class="w-full max-w-[430px] min-h-screen sm:min-h-[820px] sm:h-[860px] sm:max-h-[92vh] bg-[#F8FAFC] sm:rounded-[38px] sm:shadow-float sm:border-[6px] sm:border-white flex flex-col overflow-hidden relative">
 
-    <!-- ==================== VISTA 0: LOGIN Y REGISTRO (FIREBASE AUTH) ==================== -->
+    <!-- ==================== VISTA 0: LOGIN Y REGISTRO ==================== -->
     <section id="loginView" class="flex-1 flex flex-col justify-between p-6 bg-gradient-to-b from-white via-[#F8FAFC] to-[#EFF6FF] overflow-y-auto">
       <div>
         <div class="flex items-center justify-between pt-2">
@@ -86,7 +70,7 @@
             <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
             <span class="text-[11px] font-bold tracking-wider uppercase text-blue-700">PULSO / SALUD CONECTADA</span>
           </div>
-          <span class="text-[11px] font-medium text-slate-400 tabular-nums">Firebase Auth</span>
+          <span class="text-[11px] font-medium text-slate-400 tabular-nums">Firebase IoT</span>
         </div>
 
         <div class="mt-6">
@@ -98,7 +82,7 @@
           </div>
           <h1 id="authTitle" class="text-2xl font-extrabold tracking-tight text-slate-900">Iniciar sesión</h1>
           <p id="authSubtitle" class="text-sm text-slate-500 mt-1 leading-relaxed">
-            Acceso clínico para cuidadores y monitoreo en tiempo real del adulto mayor.
+            Acceso clínico para cuidadores y monitoreo directo desde ESP32 en tiempo real.
           </p>
         </div>
 
@@ -113,7 +97,6 @@
         </div>
 
         <form id="authForm" class="mt-4 space-y-3.5" onsubmit="handleAuthSubmit(event)">
-          <!-- Campo extra solo al crear cuenta -->
           <div id="registerNameBox" class="hidden">
             <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre del cuidador o profesional</label>
             <input id="authName" type="text" placeholder="Ej. Dra. Sofía Mendoza"
@@ -132,14 +115,14 @@
               class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition" />
           </div>
 
-          <!-- Modo de telemetría -->
+          <!-- Fuente de telemetría -->
           <div>
             <label class="block text-xs font-semibold text-slate-700 mb-1.5">Fuente de telemetría</label>
             <div class="grid grid-cols-2 gap-2">
-              <button type="button" id="modeBlynkBtn" onclick="selectLoginMode('blynk')"
+              <button type="button" id="modeFirebaseBtn" onclick="selectLoginMode('firebase')"
                 class="p-2.5 rounded-xl border-2 border-blue-600 bg-blue-50/70 text-left transition">
-                <div class="text-xs font-bold text-blue-900">Blynk En Vivo</div>
-                <div class="text-[11px] text-blue-700/80">ESP32 · V0–V6</div>
+                <div class="text-xs font-bold text-blue-900">ESP32 En Vivo</div>
+                <div class="text-[11px] text-blue-700/80">Directo · Firestore</div>
               </button>
               <button type="button" id="modeSimBtn" onclick="selectLoginMode('sim')"
                 class="p-2.5 rounded-xl border border-slate-200 bg-white text-left transition">
@@ -166,7 +149,7 @@
       </div>
 
       <p class="text-[11px] text-center text-slate-400 mt-4 leading-relaxed">
-        Autenticación y base de datos en la nube con Firebase · Telemetría IoT ESP32 + Blynk.
+        Arquitectura directa ESP32 → Firebase Firestore · Sin intermediarios.
       </p>
     </section>
 
@@ -186,10 +169,10 @@
                 <span id="headerPatientMeta" class="text-xs text-slate-500 tabular-nums shrink-0">· 74a</span>
               </div>
               <div class="flex items-center gap-1.5 mt-0.5">
-                <span id="connDotWrap" class="relative flex h-2 w-2 text-emerald-500">
+                <span class="relative flex h-2 w-2 text-emerald-500">
                   <span id="connDotPing" class="live-dot w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
                 </span>
-                <span id="connStatusText" class="text-[11px] font-semibold text-emerald-700 truncate">Conectado · Blynk</span>
+                <span id="connStatusText" class="text-[11px] font-semibold text-emerald-700 truncate">Conectado · Firebase</span>
                 <span id="cloudSyncBadge" class="text-[10px] font-semibold px-1.5 py-0.2 rounded bg-slate-100 text-slate-500">Nube</span>
               </div>
             </div>
@@ -240,7 +223,7 @@
             <div class="flex items-center justify-between mb-3">
               <div>
                 <h3 class="text-base font-bold text-slate-900">Datos del paciente</h3>
-                <p class="text-xs text-slate-500">Sincronizado con Firebase Firestore</p>
+                <p id="caregiverLabel" class="text-xs text-slate-500">Cuidador activo</p>
               </div>
               <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700">Perfil clínico</span>
             </div>
@@ -282,7 +265,7 @@
                 </button>
               </div>
               <p id="patientSavedMsg" class="text-xs font-semibold text-emerald-600 hidden">
-                ✓ Datos del paciente guardados en la nube.
+                ✓ Datos del paciente guardados en Firestore.
               </p>
             </form>
           </div>
@@ -296,7 +279,7 @@
                   <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
                   <div>
                     <div class="text-xs font-bold text-slate-800">Sensor ECG · AD8232</div>
-                    <div class="text-[11px] text-slate-500">Onda V0 · Leads-off V4</div>
+                    <div class="text-[11px] text-slate-500">Filtro LMS 60 Hz · Leads-off</div>
                   </div>
                 </div>
                 <span id="diagEcgBadge" class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800">Activo</span>
@@ -307,7 +290,7 @@
                   <span class="w-2.5 h-2.5 rounded-full bg-teal-500"></span>
                   <div>
                     <div class="text-xs font-bold text-slate-800">Temperatura · DS18B20</div>
-                    <div class="text-[11px] text-slate-500">Canal térmico V1 (°C)</div>
+                    <div class="text-[11px] text-slate-500">Bus digital 1-Wire (°C)</div>
                   </div>
                 </div>
                 <span class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-teal-100 text-teal-800">Listo</span>
@@ -315,17 +298,17 @@
             </div>
           </div>
 
-          <!-- Conexión Blynk -->
+          <!-- Enlace directo ESP32 -> Firebase -->
           <div class="bg-white rounded-2xl p-4 shadow-card border border-slate-100">
             <div class="flex items-center justify-between mb-2">
-              <h3 class="text-sm font-bold text-slate-900">Conexión Blynk IoT</h3>
-              <span id="currentModePill" class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">Blynk En Vivo</span>
+              <h3 class="text-sm font-bold text-slate-900">Enlace ESP32 → Firebase</h3>
+              <span id="currentModePill" class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">ESP32 En Vivo</span>
             </div>
 
             <div class="grid grid-cols-2 gap-2 mb-3">
-              <button type="button" id="cfgBtnBlynk" onclick="setTelemetryMode('blynk')"
+              <button type="button" id="cfgBtnFirebase" onclick="setTelemetryMode('firebase')"
                 class="py-2 rounded-xl text-xs font-bold border-2 border-blue-600 bg-blue-50 text-blue-800 transition">
-                Blynk En Vivo
+                ESP32 En Vivo
               </button>
               <button type="button" id="cfgBtnSim" onclick="setTelemetryMode('sim')"
                 class="py-2 rounded-xl text-xs font-bold border border-slate-200 bg-slate-50 text-slate-700 transition">
@@ -333,14 +316,10 @@
               </button>
             </div>
 
-            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Blynk Auth Token</label>
-            <div class="flex gap-2">
-              <input id="blynkTokenInput" type="text" value="8B9dQ94c_31jK5W-x6173h0X6s8-6o1s"
-                class="flex-1 px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30" />
-              <button type="button" onclick="applyBlynkToken()"
-                class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold transition">
-                Aplicar
-              </button>
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/70 text-[11px] text-slate-600 space-y-1 font-mono">
+              <div><span class="text-slate-400">Proyecto:</span> pulso-holter</div>
+              <div><span class="text-slate-400">Lectura:</span> telemetria/en_vivo</div>
+              <div><span class="text-slate-400">Comandos:</span> telemetria/comandos</div>
             </div>
           </div>
         </section>
@@ -411,7 +390,7 @@
               </div>
               <div class="mt-1.5 flex items-center justify-between">
                 <span id="bpmStatusTag" class="text-[11px] font-semibold text-emerald-600">Normal (60–90)</span>
-                <span class="text-[10px] font-mono text-slate-400">V0</span>
+                <span class="text-[10px] font-mono text-slate-400">ECG</span>
               </div>
             </div>
 
@@ -430,7 +409,7 @@
               </div>
               <div class="mt-1.5 flex items-center justify-between">
                 <span id="tempStatusTag" class="text-[11px] font-semibold text-teal-600">Normotermia</span>
-                <span class="text-[10px] font-mono text-slate-400">V1</span>
+                <span class="text-[10px] font-mono text-slate-400">DS18B20</span>
               </div>
             </div>
           </div>
@@ -443,7 +422,7 @@
                   <h3 id="ecgChartTitle" class="text-xs font-extrabold uppercase tracking-wider text-slate-800">Electrocardiograma (ECG)</h3>
                   <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-50 text-rose-600">AD8232</span>
                 </div>
-                <p id="ecgChartSub" class="text-[11px] text-slate-400">Trazo continuo sincronizado con V0</p>
+                <p id="ecgChartSub" class="text-[11px] text-slate-400">Trazo sincronizado con ESP32 en tiempo real</p>
               </div>
 
               <div class="flex items-center bg-slate-100 p-0.5 rounded-lg">
@@ -462,7 +441,7 @@
               <canvas id="ecgCanvas" class="w-full h-full block"></canvas>
               <div id="leadsOffOverlay" class="hidden absolute inset-0 bg-slate-950/85 backdrop-blur-[2px] flex flex-col items-center justify-center p-3 text-center">
                 <span class="px-2.5 py-1 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-300 text-[11px] font-bold">
-                  ⚠ Electrodo suelto detectado (V4)
+                  ⚠ Electrodo suelto detectado
                 </span>
                 <p class="text-[11px] text-slate-300 mt-1.5 max-w-[240px]">
                   Verifique la adhesión de los parches ECG en el paciente.
@@ -476,44 +455,44 @@
             <div class="flex items-center justify-between mb-2">
               <div>
                 <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-800">Curva térmica (°C)</h3>
-                <p class="text-[11px] text-slate-400">Rango normal 36.0 °C – 38.0 °C · Canal V1</p>
+                <p class="text-[11px] text-slate-400">Rango normal 36.0 °C – 38.0 °C · DS18B20</p>
               </div>
-              <span id="tempRangePill" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 tabular-nums">36.5 °C</span>
+              <span id="tempRangePill" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 tabular-nums">--.- °C</span>
             </div>
             <div class="relative w-full h-24 rounded-xl bg-slate-50 border border-slate-200/70 overflow-hidden">
               <canvas id="tempCanvas" class="w-full h-full block"></canvas>
             </div>
           </div>
 
-          <!-- Estado de canales V2-V5 y disparador V6 -->
+          <!-- Estado de alertas y disparador al ESP32 -->
           <div class="bg-white rounded-2xl p-3.5 shadow-card border border-slate-100">
             <div class="flex items-center justify-between mb-2.5">
-              <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-800">Canales y alertas (V2–V6)</h3>
-              <button type="button" id="triggerV6Btn" onclick="sendManualAlertV6()"
+              <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-800">Alertas clínicas y control</h3>
+              <button type="button" id="triggerAlertBtn" onclick="sendManualAlertESP32()"
                 class="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 active:scale-[0.98] text-white text-[11px] font-bold shadow-xs transition flex items-center gap-1.5">
-                <span>Disparar alerta (V6)</span>
+                <span>Disparar alerta</span>
               </button>
             </div>
 
             <div class="grid grid-cols-4 gap-1.5 text-center">
-              <div id="pin-v2" class="p-2 rounded-xl bg-slate-50 border border-slate-200/80">
-                <div class="text-[10px] font-mono text-slate-400">V2</div>
+              <div id="flag-tachy" class="p-2 rounded-xl bg-slate-50 border border-slate-200/80">
+                <div class="text-[10px] font-mono text-slate-400">&gt;90</div>
                 <div class="text-[11px] font-bold text-slate-700 mt-0.5 truncate">Taquicardia</div>
               </div>
-              <div id="pin-v3" class="p-2 rounded-xl bg-slate-50 border border-slate-200/80">
-                <div class="text-[10px] font-mono text-slate-400">V3</div>
+              <div id="flag-fever" class="p-2 rounded-xl bg-slate-50 border border-slate-200/80">
+                <div class="text-[10px] font-mono text-slate-400">&gt;38°C</div>
                 <div class="text-[11px] font-bold text-slate-700 mt-0.5 truncate">Fiebre</div>
               </div>
-              <div id="pin-v4" class="p-2 rounded-xl bg-slate-50 border border-slate-200/80">
-                <div class="text-[10px] font-mono text-slate-400">V4</div>
+              <div id="flag-leads" class="p-2 rounded-xl bg-slate-50 border border-slate-200/80">
+                <div class="text-[10px] font-mono text-slate-400">LO±</div>
                 <div class="text-[11px] font-bold text-slate-700 mt-0.5 truncate">Electrodo</div>
               </div>
-              <div id="pin-v5" class="p-2 rounded-xl bg-slate-50 border border-slate-200/80">
-                <div class="text-[10px] font-mono text-slate-400">V5</div>
+              <div id="flag-hypo" class="p-2 rounded-xl bg-slate-50 border border-slate-200/80">
+                <div class="text-[10px] font-mono text-slate-400">&lt;36°C</div>
                 <div class="text-[11px] font-bold text-slate-700 mt-0.5 truncate">Hipotermia</div>
               </div>
             </div>
-            <p id="v6Feedback" class="text-[11px] text-slate-500 mt-2 hidden"></p>
+            <p id="cmdFeedback" class="text-[11px] text-slate-500 mt-2 hidden"></p>
           </div>
         </section>
 
@@ -523,7 +502,7 @@
             <div class="flex items-center justify-between gap-2">
               <div>
                 <h3 class="text-base font-bold text-slate-900">Historial de mediciones</h3>
-                <p id="historySubtitle" class="text-xs text-slate-500">Guardado en nube + dispositivo</p>
+                <p class="text-xs text-slate-500">Guardado en Firestore + dispositivo</p>
               </div>
               <button type="button" onclick="captureSnapshotNow()"
                 class="px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition shrink-0">
@@ -547,7 +526,7 @@
 
           <div class="pt-1 text-center">
             <button type="button" onclick="clearHistory()" class="text-xs font-semibold text-slate-400 hover:text-rose-600 transition">
-              Limpiar historial
+              Limpiar historial local
             </button>
           </div>
         </section>
@@ -556,13 +535,13 @@
     </div>
   </div>
 
-  <!-- Firebase SDK (Compat v10 para uso directo en navegador sin bundler) -->
+  <!-- Firebase SDK (Compat v10) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
   <script>
-    // ==================== CONFIGURACIÓN FIREBASE (PULSO-HOLTER) ====================
+    // ==================== CONFIGURACIÓN FIREBASE ====================
     const firebaseConfig = {
       apiKey: "AIzaSyAZq-lDlMUg6CJZ9eZeZPJxPPDk87kBvvY",
       authDomain: "pulso-holter.firebaseapp.com",
@@ -575,6 +554,7 @@
     let fbAuth = null;
     let fbDb = null;
     let cloudReady = false;
+    let telemetryUnsubscribe = null;
 
     try {
       firebase.initializeApp(firebaseConfig);
@@ -585,36 +565,33 @@
       console.warn("Firebase no inicializado:", e);
     }
 
-    // ==================== CONSTANTES Y ESTADO ====================
-    const DEFAULT_BLYNK_TOKEN = "8B9dQ94c_31jK5W-x6173h0X6s8-6o1s";
+    // ==================== ESTADO ====================
     const STORAGE_KEYS = {
-      mode: "pulso_mode_v1",
-      token: "pulso_blynk_token_v1",
+      mode: "pulso_mode_v2",
       patient: "pulso_patient_v1",
       history: "pulso_history_v1",
-      sound: "pulso_sound_v1",
-      sessionUser: "pulso_session_user_v1"
+      sound: "pulso_sound_v1"
     };
 
     const state = {
       authTab: "login",
       userEmail: "cuidador@pulso.pe",
       userName: "Cuidador",
-      mode: localStorage.getItem(STORAGE_KEYS.mode) || "blynk",
-      token: localStorage.getItem(STORAGE_KEYS.token) || DEFAULT_BLYNK_TOKEN,
+      mode: localStorage.getItem(STORAGE_KEYS.mode) || "firebase",
       patient: loadPatient(),
       history: loadHistory(),
       soundEnabled: localStorage.getItem(STORAGE_KEYS.sound) !== "false",
       chartMode: "ecg",
       simScenario: "normal",
+      lastSeenSeq: null,
+      lastPacketLocalTime: 0,
       live: {
         bpm: null,
         temp: null,
-        ecgRaw: 2048,
-        v2: 0,
-        v3: 0,
-        v4: 0,
-        v5: 0,
+        taquicardia: 0,
+        fiebre: 0,
+        electrodoSuelto: 0,
+        hipotermia: 0,
         connected: false,
         lastUpdate: null
       },
@@ -654,13 +631,73 @@
 
     function persistLocal() {
       localStorage.setItem(STORAGE_KEYS.mode, state.mode);
-      localStorage.setItem(STORAGE_KEYS.token, state.token);
       localStorage.setItem(STORAGE_KEYS.patient, JSON.stringify(state.patient));
       localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(state.history.slice(0, 60)));
       localStorage.setItem(STORAGE_KEYS.sound, String(state.soundEnabled));
     }
 
-    // ==================== FIRESTORE (NUBE) ====================
+    // ==================== TELEMETRÍA EN TIEMPO REAL (FIRESTORE) ====================
+    function startFirestoreTelemetryListener() {
+      stopFirestoreTelemetryListener();
+      if (!cloudReady || !fbDb || state.mode !== "firebase") return;
+
+      telemetryUnsubscribe = fbDb.collection("telemetria").doc("en_vivo").onSnapshot(
+        (doc) => {
+          if (state.mode !== "firebase") return;
+          if (!doc.exists) {
+            state.live.connected = false;
+            evaluateClinicalStatus();
+            return;
+          }
+
+          const d = doc.data();
+          const bpm = d.bpm !== undefined && d.bpm !== null ? Number(d.bpm) : null;
+          const temp = d.temp !== undefined && d.temp !== null ? Number(d.temp) : null;
+          const seq = d.seq !== undefined ? Number(d.seq) : null;
+
+          // Detecta si es un paquete nuevo del ESP32
+          const isFreshPacket = (seq !== null && seq !== state.lastSeenSeq);
+          if (isFreshPacket || state.lastSeenSeq === null) {
+            if (isFreshPacket) {
+              state.lastPacketLocalTime = Date.now();
+              state.live.connected = true;
+            }
+            state.lastSeenSeq = seq;
+          }
+
+          state.live.bpm = Number.isFinite(bpm) ? bpm : null;
+          state.live.temp = Number.isFinite(temp) ? temp : null;
+          state.live.taquicardia = Number(d.taquicardia || 0) ? 1 : (bpm !== null && bpm > 90 ? 1 : 0);
+          state.live.fiebre = Number(d.fiebre || 0) ? 1 : (temp !== null && temp > 38.0 ? 1 : 0);
+          state.live.electrodoSuelto = Number(d.electrodoSuelto || 0) ? 1 : 0;
+          state.live.hipotermia = Number(d.hipotermia || 0) ? 1 : (temp !== null && temp < 36.0 ? 1 : 0);
+          state.live.lastUpdate = new Date();
+
+          if (state.live.bpm !== null) pushSeries(state.bpmSeries, state.live.bpm, 36);
+          if (state.live.temp !== null) pushSeries(state.tempSeries, state.live.temp, 36);
+
+          setCloudBadge("Nube ✓", "bg-emerald-50 text-emerald-700");
+          maybeAutoLog(state.live.bpm, state.live.temp);
+          evaluateClinicalStatus();
+          renderMetricsAndFlags();
+        },
+        (err) => {
+          console.warn("Error leyendo telemetria/en_vivo:", err);
+          state.live.connected = false;
+          setCloudBadge("Sin red", "bg-amber-50 text-amber-700");
+          evaluateClinicalStatus();
+        }
+      );
+    }
+
+    function stopFirestoreTelemetryListener() {
+      if (telemetryUnsubscribe) {
+        telemetryUnsubscribe();
+        telemetryUnsubscribe = null;
+      }
+    }
+
+    // ==================== PACIENTES E HISTORIAL EN FIRESTORE ====================
     async function syncPatientToCloud() {
       if (!cloudReady || !fbDb) return;
       try {
@@ -671,7 +708,7 @@
         }, { merge: true });
         setCloudBadge("Nube ✓", "bg-emerald-50 text-emerald-700");
       } catch (err) {
-        console.warn("Error guardando paciente en Firestore:", err);
+        console.warn("Error guardando paciente:", err);
         setCloudBadge("Local", "bg-amber-50 text-amber-700");
       }
     }
@@ -688,7 +725,7 @@
             age: d.age || state.patient.age,
             weight: d.weight || state.patient.weight
           };
-          localStorage.setItem(STORAGE_KEYS.patient, JSON.stringify(state.patient));
+          persistLocal();
           hydratePatientForm();
           renderPatientHeader();
         }
@@ -711,10 +748,10 @@
       try {
         const snap = await fbDb.collection("mediciones").orderBy("id", "desc").limit(30).get();
         if (!snap.empty) {
-          const cloudItems = [];
-          snap.forEach(doc => cloudItems.push(doc.data()));
-          state.history = cloudItems;
-          localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(state.history.slice(0, 60)));
+          const items = [];
+          snap.forEach(doc => items.push(doc.data()));
+          state.history = items;
+          persistLocal();
           renderHistory();
         }
       } catch (_) {}
@@ -742,21 +779,21 @@
       document.getElementById("authTitle").textContent = isReg ? "Crear cuenta" : "Iniciar sesión";
       document.getElementById("authSubtitle").textContent = isReg
         ? "Registra una cuenta de cuidador en Firebase para acceder desde cualquier dispositivo."
-        : "Acceso clínico para cuidadores y monitoreo en tiempo real del adulto mayor.";
+        : "Acceso clínico para cuidadores y monitoreo directo desde ESP32 en tiempo real.";
       document.getElementById("authSubmitBtn").textContent = isReg ? "Registrar y entrar" : "Ingresar al panel";
       document.getElementById("authFeedback").classList.add("hidden");
     }
 
     function selectLoginMode(mode) {
       state.mode = mode;
-      const blynkBtn = document.getElementById("modeBlynkBtn");
+      const fbBtn = document.getElementById("modeFirebaseBtn");
       const simBtn = document.getElementById("modeSimBtn");
-      if (mode === "blynk") {
-        blynkBtn.className = "p-2.5 rounded-xl border-2 border-blue-600 bg-blue-50/70 text-left transition";
+      if (mode === "firebase") {
+        fbBtn.className = "p-2.5 rounded-xl border-2 border-blue-600 bg-blue-50/70 text-left transition";
         simBtn.className = "p-2.5 rounded-xl border border-slate-200 bg-white text-left transition";
       } else {
         simBtn.className = "p-2.5 rounded-xl border-2 border-blue-600 bg-blue-50/70 text-left transition";
-        blynkBtn.className = "p-2.5 rounded-xl border border-slate-200 bg-white text-left transition";
+        fbBtn.className = "p-2.5 rounded-xl border border-slate-200 bg-white text-left transition";
       }
     }
 
@@ -790,7 +827,6 @@
             state.userName = (cred.user && cred.user.displayName) || email.split("@")[0];
           }
           state.userEmail = email;
-          localStorage.setItem(STORAGE_KEYS.sessionUser, JSON.stringify({ email: state.userEmail, name: state.userName }));
           await loadPatientFromCloud();
           await loadHistoryFromCloud();
           enterMainApp();
@@ -826,40 +862,43 @@
       persistLocal();
       document.getElementById("loginView").classList.add("hidden");
       document.getElementById("mainApp").classList.remove("hidden");
+      document.getElementById("caregiverLabel").textContent = `Sesión: ${state.userName} (${state.userEmail})`;
       hydratePatientForm();
       renderPatientHeader();
       syncModeUI();
       updateSoundIcon();
       renderHistory();
       switchTab("resumen");
-      pollTelemetry();
+
+      if (state.mode === "firebase") {
+        startFirestoreTelemetryListener();
+      } else {
+        tickTelemetry();
+      }
     }
 
     function logoutApp() {
+      stopFirestoreTelemetryListener();
       if (cloudReady && fbAuth) {
         fbAuth.signOut().catch(() => {});
       }
-      localStorage.removeItem(STORAGE_KEYS.sessionUser);
       document.getElementById("mainApp").classList.add("hidden");
       document.getElementById("loginView").classList.remove("hidden");
     }
 
-    // ==================== NAVEGACIÓN DE PESTAÑAS ====================
+    // ==================== NAVEGACIÓN Y PACIENTE ====================
     function switchTab(tabName) {
       ["registro", "resumen", "historial"].forEach((t) => {
         document.getElementById(`view-${t}`).classList.toggle("hidden", t !== tabName);
         const btn = document.getElementById(`tab-${t}`);
-        if (t === tabName) {
-          btn.className = "tab-btn py-1.5 rounded-lg text-xs font-bold transition bg-white text-slate-900 shadow-2xs";
-        } else {
-          btn.className = "tab-btn py-1.5 rounded-lg text-xs font-semibold transition text-slate-600 hover:text-slate-900";
-        }
+        btn.className = t === tabName
+          ? "tab-btn py-1.5 rounded-lg text-xs font-bold transition bg-white text-slate-900 shadow-2xs"
+          : "tab-btn py-1.5 rounded-lg text-xs font-semibold transition text-slate-600 hover:text-slate-900";
       });
       document.getElementById("scrollContainer").scrollTop = 0;
       if (tabName === "historial") renderHistory();
     }
 
-    // ==================== PACIENTE Y MODO ====================
     function hydratePatientForm() {
       document.getElementById("patName").value = state.patient.name || "";
       document.getElementById("patDni").value = state.patient.dni || "";
@@ -896,35 +935,29 @@
       state.mode = newMode;
       persistLocal();
       syncModeUI();
-      pollTelemetry();
-    }
-
-    function applyBlynkToken() {
-      const val = document.getElementById("blynkTokenInput").value.trim();
-      if (!val) return;
-      state.token = val;
-      state.mode = "blynk";
-      persistLocal();
-      syncModeUI();
-      pollTelemetry();
+      if (newMode === "firebase") {
+        startFirestoreTelemetryListener();
+      } else {
+        stopFirestoreTelemetryListener();
+        tickTelemetry();
+      }
     }
 
     function syncModeUI() {
-      const isBlynk = state.mode === "blynk";
-      document.getElementById("blynkTokenInput").value = state.token;
-      document.getElementById("currentModePill").textContent = isBlynk ? "Blynk En Vivo" : "Simulación Demo";
-      document.getElementById("currentModePill").className = isBlynk
+      const isFb = state.mode === "firebase";
+      document.getElementById("currentModePill").textContent = isFb ? "ESP32 En Vivo" : "Simulación Demo";
+      document.getElementById("currentModePill").className = isFb
         ? "text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-blue-100 text-blue-700"
         : "text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-amber-100 text-amber-800";
 
-      document.getElementById("cfgBtnBlynk").className = isBlynk
+      document.getElementById("cfgBtnFirebase").className = isFb
         ? "py-2 rounded-xl text-xs font-bold border-2 border-blue-600 bg-blue-50 text-blue-800 transition"
         : "py-2 rounded-xl text-xs font-bold border border-slate-200 bg-slate-50 text-slate-700 transition";
-      document.getElementById("cfgBtnSim").className = !isBlynk
+      document.getElementById("cfgBtnSim").className = !isFb
         ? "py-2 rounded-xl text-xs font-bold border-2 border-blue-600 bg-blue-50 text-blue-800 transition"
         : "py-2 rounded-xl text-xs font-bold border border-slate-200 bg-slate-50 text-slate-700 transition";
 
-      document.getElementById("simScenarioBar").classList.toggle("hidden", isBlynk);
+      document.getElementById("simScenarioBar").classList.toggle("hidden", isFb);
     }
 
     function setSimScenario(scen) {
@@ -935,56 +968,24 @@
           ? "scen-btn py-1.5 px-1 rounded-lg text-[11px] font-bold bg-amber-600 text-white shadow-2xs transition"
           : "scen-btn py-1.5 px-1 rounded-lg text-[11px] font-bold bg-white text-amber-900 border border-amber-200 transition";
       });
-      pollTelemetry();
+      tickTelemetry();
     }
 
-    // ==================== TELEMETRÍA BLYNK / SIMULACIÓN ====================
-    async function pollTelemetry() {
+    // ==================== CICLO DE SIMULACIÓN Y VIGILANCIA DE CONEXIÓN ====================
+    function tickTelemetry() {
       if (document.getElementById("mainApp").classList.contains("hidden")) return;
 
-      if (state.mode === "blynk") {
-        await fetchBlynkData();
-      } else {
+      if (state.mode === "sim") {
         generateSimulatedData();
-      }
-      evaluateClinicalStatus();
-      renderMetricsAndPins();
-    }
-
-    async function fetchBlynkData() {
-      const url = `https://blynk.cloud/external/api/get?token=${encodeURIComponent(state.token)}&v0&v1&v2&v3&v4&v5`;
-      try {
-        const res = await fetch(url, { cache: "no-store" });
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        const data = await res.json();
-
-        const parseNum = (val) => {
-          if (val === null || val === undefined || val === "") return null;
-          const n = Number(val);
-          return Number.isFinite(n) ? n : null;
-        };
-
-        const bpm = parseNum(data.v0);
-        const temp = parseNum(data.v1);
-        const v2 = parseNum(data.v2) ?? (bpm !== null && bpm > 90 ? 1 : 0);
-        const v3 = parseNum(data.v3) ?? (temp !== null && temp > 38.0 ? 1 : 0);
-        const v4 = parseNum(data.v4) ?? 0;
-        const v5 = parseNum(data.v5) ?? (temp !== null && temp < 36.0 ? 1 : 0);
-
-        state.live.bpm = bpm;
-        state.live.temp = temp;
-        state.live.v2 = v2 ? 1 : 0;
-        state.live.v3 = v3 ? 1 : 0;
-        state.live.v4 = v4 ? 1 : 0;
-        state.live.v5 = v5 ? 1 : 0;
-        state.live.connected = true;
-        state.live.lastUpdate = new Date();
-
-        if (bpm !== null) pushSeries(state.bpmSeries, bpm, 36);
-        if (temp !== null) pushSeries(state.tempSeries, temp, 36);
-        maybeAutoLog(bpm, temp);
-      } catch (_) {
-        state.live.connected = false;
+        evaluateClinicalStatus();
+        renderMetricsAndFlags();
+      } else {
+        // Si pasan >10s sin paquete nuevo del ESP32, marca "Esperando ESP32"
+        const active = state.lastPacketLocalTime > 0 && (Date.now() - state.lastPacketLocalTime < 10000);
+        if (state.live.connected !== active) {
+          state.live.connected = active;
+          evaluateClinicalStatus();
+        }
       }
     }
 
@@ -992,24 +993,24 @@
       const jitter = (amp) => (Math.random() - 0.5) * 2 * amp;
       let bpm = 74 + jitter(2.5);
       let temp = 36.6 + jitter(0.12);
-      let v2 = 0, v3 = 0, v4 = 0, v5 = 0;
+      let tachy = 0, fever = 0, leads = 0, hypo = 0;
 
       if (state.simScenario === "tachy") {
         bpm = 108 + jitter(4);
-        v2 = 1;
+        tachy = 1;
       } else if (state.simScenario === "fever") {
         temp = 38.5 + jitter(0.15);
-        v3 = 1;
+        fever = 1;
       } else if (state.simScenario === "leadsoff") {
-        v4 = 1;
+        leads = 1;
       }
 
       state.live.bpm = Math.round(bpm);
       state.live.temp = Number(temp.toFixed(1));
-      state.live.v2 = v2;
-      state.live.v3 = v3;
-      state.live.v4 = v4;
-      state.live.v5 = v5;
+      state.live.taquicardia = tachy;
+      state.live.fiebre = fever;
+      state.live.electrodoSuelto = leads;
+      state.live.hipotermia = hypo;
       state.live.connected = true;
       state.live.lastUpdate = new Date();
 
@@ -1025,13 +1026,13 @@
 
     // ==================== EVALUACIÓN CLÍNICA ====================
     function evaluateClinicalStatus() {
-      const { bpm, temp, v2, v3, v4, v5, connected } = state.live;
+      const { bpm, temp, taquicardia, fiebre, electrodoSuelto, hipotermia, connected } = state.live;
       const alerts = [];
 
-      if (v4 === 1) alerts.push("Electrodo suelto (V4)");
-      if (v2 === 1 || (bpm !== null && bpm > 90)) alerts.push(`Taquicardia (${bpm ?? "--"} lpm > 90)`);
-      if (v3 === 1 || (temp !== null && temp > 38.0)) alerts.push(`Fiebre (${temp ?? "--"} °C > 38.0 °C)`);
-      if (v5 === 1 || (temp !== null && temp < 36.0)) alerts.push(`Hipotermia (${temp ?? "--"} °C < 36.0 °C)`);
+      if (electrodoSuelto === 1) alerts.push("Electrodo suelto (LO±)");
+      if (taquicardia === 1 || (bpm !== null && bpm > 90)) alerts.push(`Taquicardia (${bpm ?? "--"} lpm > 90)`);
+      if (fiebre === 1 || (temp !== null && temp > 38.0)) alerts.push(`Fiebre (${temp ?? "--"} °C > 38.0 °C)`);
+      if (hipotermia === 1 || (temp !== null && temp < 36.0)) alerts.push(`Hipotermia (${temp ?? "--"} °C < 36.0 °C)`);
 
       const banner = document.getElementById("alertBanner");
       const iconBox = document.getElementById("alertIconBox");
@@ -1046,14 +1047,14 @@
       const dotPing = document.getElementById("connDotPing");
       const statusText = document.getElementById("connStatusText");
 
-      if (!connected && state.mode === "blynk") {
+      if (!connected && state.mode === "firebase") {
         dotPing.className = "w-2 h-2 rounded-full bg-amber-500 inline-block";
         statusText.className = "text-[11px] font-semibold text-amber-700 truncate";
-        statusText.textContent = "Esperando ESP32 · Blynk";
+        statusText.textContent = "Esperando ESP32 · Firebase";
       } else {
         dotPing.className = "live-dot w-2 h-2 rounded-full bg-emerald-500 inline-block";
         statusText.className = "text-[11px] font-semibold text-emerald-700 truncate";
-        statusText.textContent = state.mode === "blynk" ? "Conectado · Blynk" : "Modo Simulación";
+        statusText.textContent = state.mode === "firebase" ? "ESP32 En Vivo · Firebase" : "Modo Simulación";
       }
 
       if (alerts.length > 0) {
@@ -1071,9 +1072,9 @@
         msgEl.textContent = "Frecuencia cardíaca y temperatura dentro de rangos normales. Electrodos adheridos.";
       }
 
-      document.getElementById("leadsOffOverlay").classList.toggle("hidden", v4 !== 1);
+      document.getElementById("leadsOffOverlay").classList.toggle("hidden", electrodoSuelto !== 1);
       const diagEcg = document.getElementById("diagEcgBadge");
-      if (v4 === 1) {
+      if (electrodoSuelto === 1) {
         diagEcg.textContent = "Electrodo suelto";
         diagEcg.className = "text-[11px] font-bold px-2 py-0.5 rounded-md bg-rose-100 text-rose-800";
       } else {
@@ -1082,16 +1083,16 @@
       }
     }
 
-    function renderMetricsAndPins() {
-      const { bpm, temp, v2, v3, v4, v5 } = state.live;
+    function renderMetricsAndFlags() {
+      const { bpm, temp, taquicardia, fiebre, electrodoSuelto, hipotermia } = state.live;
 
       const bpmEl = document.getElementById("bpmValue");
       const bpmTag = document.getElementById("bpmStatusTag");
       const bpmCard = document.getElementById("bpmCard");
 
-      if (bpm !== null && v4 !== 1) {
+      if (bpm !== null && electrodoSuelto !== 1) {
         bpmEl.textContent = bpm;
-        if (bpm > 90 || v2 === 1) {
+        if (bpm > 90 || taquicardia === 1) {
           bpmTag.textContent = "Taquicardia (>90 lpm)";
           bpmTag.className = "text-[11px] font-bold text-rose-600";
           bpmCard.className = "bg-white rounded-2xl p-3.5 shadow-card border-2 border-rose-400 transition-all";
@@ -1104,8 +1105,8 @@
         heart.style.transform = "scale(1.28)";
         setTimeout(() => { heart.style.transform = "scale(1)"; }, 160);
       } else {
-        bpmEl.textContent = v4 === 1 ? "—" : (bpm ?? "--");
-        bpmTag.textContent = v4 === 1 ? "Sin contacto" : "Esperando V0";
+        bpmEl.textContent = electrodoSuelto === 1 ? "—" : (bpm ?? "--");
+        bpmTag.textContent = electrodoSuelto === 1 ? "Sin contacto" : "Esperando ESP32";
         bpmTag.className = "text-[11px] font-semibold text-slate-400";
       }
 
@@ -1117,11 +1118,11 @@
       if (temp !== null) {
         tempEl.textContent = temp.toFixed(1);
         tempPill.textContent = `${temp.toFixed(1)} °C`;
-        if (temp > 38.0 || v3 === 1) {
+        if (temp > 38.0 || fiebre === 1) {
           tempTag.textContent = "Fiebre (>38.0 °C)";
           tempTag.className = "text-[11px] font-bold text-rose-600";
           tempCard.className = "bg-white rounded-2xl p-3.5 shadow-card border-2 border-rose-400 transition-all";
-        } else if (temp < 36.0 || v5 === 1) {
+        } else if (temp < 36.0 || hipotermia === 1) {
           tempTag.textContent = "Hipotermia (<36.0 °C)";
           tempTag.className = "text-[11px] font-bold text-amber-600";
           tempCard.className = "bg-white rounded-2xl p-3.5 shadow-card border-2 border-amber-400 transition-all";
@@ -1135,13 +1136,13 @@
         tempPill.textContent = "--.- °C";
       }
 
-      setPinStyle("pin-v2", v2 === 1 || (bpm !== null && bpm > 90), "rose");
-      setPinStyle("pin-v3", v3 === 1 || (temp !== null && temp > 38.0), "rose");
-      setPinStyle("pin-v4", v4 === 1, "rose");
-      setPinStyle("pin-v5", v5 === 1 || (temp !== null && temp < 36.0), "amber");
+      setFlagStyle("flag-tachy", taquicardia === 1 || (bpm !== null && bpm > 90), "rose");
+      setFlagStyle("flag-fever", fiebre === 1 || (temp !== null && temp > 38.0), "rose");
+      setFlagStyle("flag-leads", electrodoSuelto === 1, "rose");
+      setFlagStyle("flag-hypo", hipotermia === 1 || (temp !== null && temp < 36.0), "amber");
     }
 
-    function setPinStyle(id, active, color) {
+    function setFlagStyle(id, active, color) {
       const el = document.getElementById(id);
       if (!el) return;
       if (active && color === "rose") {
@@ -1151,6 +1152,33 @@
       } else {
         el.className = "p-2 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700";
       }
+    }
+
+    // ==================== ALERTA MANUAL DIRECTA AL ESP32 ====================
+    async function sendManualAlertESP32() {
+      const fb = document.getElementById("cmdFeedback");
+      fb.classList.remove("hidden");
+      fb.className = "text-[11px] font-semibold text-blue-700 mt-2";
+      fb.textContent = "Enviando alerta al ESP32 vía Firestore...";
+
+      if (state.mode === "firebase" && cloudReady && fbDb) {
+        try {
+          await fbDb.collection("telemetria").doc("comandos").set({
+            alertaManual: true,
+            triggeredBy: state.userEmail,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+          fb.className = "text-[11px] font-semibold text-emerald-700 mt-2";
+          fb.textContent = "✓ Alerta enviada a telemetria/comandos (el ESP32 la ejecutará en ≤2 s).";
+        } catch (err) {
+          fb.className = "text-[11px] font-semibold text-rose-600 mt-2";
+          fb.textContent = "No se pudo enviar el comando a Firestore.";
+        }
+      } else {
+        fb.className = "text-[11px] font-semibold text-amber-800 mt-2";
+        fb.textContent = "✓ Simulación: alerta manual disparada.";
+      }
+      captureSnapshotNow("Alerta manual al ESP32");
     }
 
     // ==================== ALARMA SONORA ====================
@@ -1197,34 +1225,6 @@
       } catch (_) {}
     }
 
-    // ==================== DISPARADOR V6 ====================
-    async function sendManualAlertV6() {
-      const fb = document.getElementById("v6Feedback");
-      fb.classList.remove("hidden");
-      fb.className = "text-[11px] font-semibold text-blue-700 mt-2";
-      fb.textContent = "Enviando señal de alerta a V6...";
-
-      if (state.mode === "blynk") {
-        try {
-          const url = `https://blynk.cloud/external/api/update?token=${encodeURIComponent(state.token)}&v6=1`;
-          const res = await fetch(url, { cache: "no-store" });
-          if (!res.ok) throw new Error();
-          fb.className = "text-[11px] font-semibold text-emerald-700 mt-2";
-          fb.textContent = "✓ Comando V6=1 enviado al ESP32.";
-          setTimeout(() => {
-            fetch(`https://blynk.cloud/external/api/update?token=${encodeURIComponent(state.token)}&v6=0`).catch(() => {});
-          }, 2500);
-        } catch (_) {
-          fb.className = "text-[11px] font-semibold text-rose-600 mt-2";
-          fb.textContent = "No se pudo contactar con Blynk (verifica conexión o token).";
-        }
-      } else {
-        fb.className = "text-[11px] font-semibold text-amber-800 mt-2";
-        fb.textContent = "✓ Simulación: alerta manual disparada en canal V6.";
-      }
-      captureSnapshotNow("Alerta manual V6");
-    }
-
     // ==================== GRÁFICAS EN CANVAS ====================
     function setChartMode(mode) {
       state.chartMode = mode;
@@ -1240,8 +1240,8 @@
         ? "Electrocardiograma (ECG)"
         : "Tendencia de Ritmo Cardíaco";
       document.getElementById("ecgChartSub").textContent = isEcg
-        ? "Trazo continuo sincronizado con V0"
-        : "Histórico reciente de lpm · Canal V0";
+        ? "Trazo sincronizado con ESP32 en tiempo real"
+        : "Histórico reciente de lpm · Firestore";
     }
 
     function pqrstWave(phase) {
@@ -1294,7 +1294,7 @@
           for (let i = 0; i <= samples; i++) {
             const x = (i / samples) * w;
             const localPhase = state.ecgPhase + (i / samples) * 2.2;
-            const amp = state.live.v4 === 1 ? (Math.random() - 0.5) * 0.15 : pqrstWave(localPhase);
+            const amp = state.live.electrodoSuelto === 1 ? (Math.random() - 0.5) * 0.15 : pqrstWave(localPhase);
             const y = h * 0.56 - amp * (h * 0.34);
             if (i === 0) ctx.moveTo(x, y);
             else ctx.lineTo(x, y);
@@ -1369,10 +1369,10 @@
 
     function addHistoryItem(bpm, temp, note) {
       const isAlert =
-        state.live.v4 === 1 ||
-        state.live.v2 === 1 ||
-        state.live.v3 === 1 ||
-        state.live.v5 === 1 ||
+        state.live.electrodoSuelto === 1 ||
+        state.live.taquicardia === 1 ||
+        state.live.fiebre === 1 ||
+        state.live.hipotermia === 1 ||
         (bpm !== null && bpm > 90) ||
         (temp !== null && (temp > 38.0 || temp < 36.0));
 
@@ -1459,17 +1459,8 @@
     }
 
     // ==================== INICIALIZACIÓN ====================
-    setInterval(pollTelemetry, 2500);
+    setInterval(tickTelemetry, 2000);
     requestAnimationFrame(renderCanvases);
-
-    if (cloudReady && fbAuth) {
-      fbAuth.onAuthStateChanged(async (user) => {
-        if (user && !document.getElementById("mainApp").classList.contains("hidden")) {
-          state.userEmail = user.email || state.userEmail;
-          state.userName = user.displayName || state.userName;
-        }
-      });
-    }
   </script>
 </body>
 </html>
