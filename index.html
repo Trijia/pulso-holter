@@ -122,7 +122,7 @@
               <button type="button" id="modeFirebaseBtn" onclick="selectLoginMode('firebase')"
                 class="p-2.5 rounded-xl border-2 border-blue-600 bg-blue-50/70 text-left transition">
                 <div class="text-xs font-bold text-blue-900">ESP32 En Vivo</div>
-                <div class="text-[11px] text-blue-700/80">Directo · Firestore</div>
+                <div class="text-[11px] text-blue-700/80">Onda real · Firestore</div>
               </button>
               <button type="button" id="modeSimBtn" onclick="selectLoginMode('sim')"
                 class="p-2.5 rounded-xl border border-slate-200 bg-white text-left transition">
@@ -149,7 +149,7 @@
       </div>
 
       <p class="text-[11px] text-center text-slate-400 mt-4 leading-relaxed">
-        Arquitectura directa ESP32 → Firebase Firestore · Sin intermediarios.
+        Arquitectura directa ESP32 → Firebase Firestore · Señal ECG real AD8232.
       </p>
     </section>
 
@@ -279,7 +279,7 @@
                   <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
                   <div>
                     <div class="text-xs font-bold text-slate-800">Sensor ECG · AD8232</div>
-                    <div class="text-[11px] text-slate-500">Filtro LMS 60 Hz · Leads-off</div>
+                    <div class="text-[11px] text-slate-500">Filtro LMS 60 Hz · Onda real 125 Hz</div>
                   </div>
                 </div>
                 <span id="diagEcgBadge" class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800">Activo</span>
@@ -318,7 +318,7 @@
 
             <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/70 text-[11px] text-slate-600 space-y-1 font-mono">
               <div><span class="text-slate-400">Proyecto:</span> pulso-holter</div>
-              <div><span class="text-slate-400">Lectura:</span> telemetria/en_vivo</div>
+              <div><span class="text-slate-400">Lectura:</span> telemetria/en_vivo (ecgWave)</div>
               <div><span class="text-slate-400">Comandos:</span> telemetria/comandos</div>
             </div>
           </div>
@@ -422,7 +422,7 @@
                   <h3 id="ecgChartTitle" class="text-xs font-extrabold uppercase tracking-wider text-slate-800">Electrocardiograma (ECG)</h3>
                   <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-50 text-rose-600">AD8232</span>
                 </div>
-                <p id="ecgChartSub" class="text-[11px] text-slate-400">Trazo sincronizado con ESP32 en tiempo real</p>
+                <p id="ecgChartSub" class="text-[11px] text-slate-400">Onda real filtrada (LMS 60 Hz · 125 Hz)</p>
               </div>
 
               <div class="flex items-center bg-slate-100 p-0.5 rounded-lg">
@@ -566,6 +566,7 @@
     }
 
     // ==================== ESTADO ====================
+    const REAL_ECG_WINDOW = 250; // 2.0 s a 125 Hz
     const STORAGE_KEYS = {
       mode: "pulso_mode_v2",
       patient: "pulso_patient_v1",
@@ -595,6 +596,14 @@
         connected: false,
         lastUpdate: null
       },
+      // Buffers de señal ECG real desde ESP32
+      realEcgBuffer: new Array(REAL_ECG_WINDOW).fill(0),
+      hasRealEcg: false,
+      ecgIncomingQueue: [],
+      ecgFrameAccum: 0,
+      ecgScale: 250,
+      ecgFs: 125,
+
       bpmSeries: [],
       tempSeries: [],
       ecgPhase: 0,
@@ -641,6 +650,11 @@
       stopFirestoreTelemetryListener();
       if (!cloudReady || !fbDb || state.mode !== "firebase") return;
 
+      state.lastSeenSeq = null;
+      state.hasRealEcg = false;
+      state.ecgIncomingQueue = [];
+      state.realEcgBuffer = new Array(REAL_ECG_WINDOW).fill(0);
+
       telemetryUnsubscribe = fbDb.collection("telemetria").doc("en_vivo").onSnapshot(
         (doc) => {
           if (state.mode !== "firebase") return;
@@ -655,7 +669,6 @@
           const temp = d.temp !== undefined && d.temp !== null ? Number(d.temp) : null;
           const seq = d.seq !== undefined ? Number(d.seq) : null;
 
-          // Detecta si es un paquete nuevo del ESP32
           const isFreshPacket = (seq !== null && seq !== state.lastSeenSeq);
           if (isFreshPacket || state.lastSeenSeq === null) {
             if (isFreshPacket) {
@@ -663,6 +676,26 @@
               state.live.connected = true;
             }
             state.lastSeenSeq = seq;
+          }
+
+          // Procesar onda real enviada por el ESP32
+          if (d.ecgFs) state.ecgFs = Number(d.ecgFs) || 125;
+          if (typeof d.ecgWave === "string" && d.ecgWave.length > 0) {
+            const samples = d.ecgWave.split(",").map(Number).filter(Number.isFinite);
+            if (samples.length > 0) {
+              if (!state.hasRealEcg) {
+                state.realEcgBuffer = samples.slice(-REAL_ECG_WINDOW);
+                while (state.realEcgBuffer.length < REAL_ECG_WINDOW) {
+                  state.realEcgBuffer.unshift(0);
+                }
+                state.hasRealEcg = true;
+              } else if (isFreshPacket) {
+                state.ecgIncomingQueue.push(...samples);
+                if (state.ecgIncomingQueue.length > REAL_ECG_WINDOW * 2) {
+                  state.ecgIncomingQueue = state.ecgIncomingQueue.slice(-REAL_ECG_WINDOW);
+                }
+              }
+            }
           }
 
           state.live.bpm = Number.isFinite(bpm) ? bpm : null;
@@ -673,7 +706,7 @@
           state.live.hipotermia = Number(d.hipotermia || 0) ? 1 : (temp !== null && temp < 36.0 ? 1 : 0);
           state.live.lastUpdate = new Date();
 
-          if (state.live.bpm !== null) pushSeries(state.bpmSeries, state.live.bpm, 36);
+          if (state.live.bpm !== null && state.live.bpm > 0) pushSeries(state.bpmSeries, state.live.bpm, 36);
           if (state.live.temp !== null) pushSeries(state.tempSeries, state.live.temp, 36);
 
           setCloudBadge("Nube ✓", "bg-emerald-50 text-emerald-700");
@@ -958,6 +991,11 @@
         : "py-2 rounded-xl text-xs font-bold border border-slate-200 bg-slate-50 text-slate-700 transition";
 
       document.getElementById("simScenarioBar").classList.toggle("hidden", isFb);
+      if (state.chartMode === "ecg") {
+        document.getElementById("ecgChartSub").textContent = isFb
+          ? "Onda real filtrada (LMS 60 Hz · 125 Hz)"
+          : "Trazo simulado de prueba clínica";
+      }
     }
 
     function setSimScenario(scen) {
@@ -980,7 +1018,6 @@
         evaluateClinicalStatus();
         renderMetricsAndFlags();
       } else {
-        // Si pasan >10s sin paquete nuevo del ESP32, marca "Esperando ESP32"
         const active = state.lastPacketLocalTime > 0 && (Date.now() - state.lastPacketLocalTime < 10000);
         if (state.live.connected !== active) {
           state.live.connected = active;
@@ -1090,7 +1127,7 @@
       const bpmTag = document.getElementById("bpmStatusTag");
       const bpmCard = document.getElementById("bpmCard");
 
-      if (bpm !== null && electrodoSuelto !== 1) {
+      if (bpm !== null && bpm > 0 && electrodoSuelto !== 1) {
         bpmEl.textContent = bpm;
         if (bpm > 90 || taquicardia === 1) {
           bpmTag.textContent = "Taquicardia (>90 lpm)";
@@ -1105,8 +1142,8 @@
         heart.style.transform = "scale(1.28)";
         setTimeout(() => { heart.style.transform = "scale(1)"; }, 160);
       } else {
-        bpmEl.textContent = electrodoSuelto === 1 ? "—" : (bpm ?? "--");
-        bpmTag.textContent = electrodoSuelto === 1 ? "Sin contacto" : "Esperando ESP32";
+        bpmEl.textContent = electrodoSuelto === 1 ? "—" : "--";
+        bpmTag.textContent = electrodoSuelto === 1 ? "Sin contacto" : "Detectando pulso";
         bpmTag.className = "text-[11px] font-semibold text-slate-400";
       }
 
@@ -1225,7 +1262,7 @@
       } catch (_) {}
     }
 
-    // ==================== GRÁFICAS EN CANVAS ====================
+    // ==================== GRÁFICAS EN CANVAS (ONDA REAL VS. SIMULACIÓN) ====================
     function setChartMode(mode) {
       state.chartMode = mode;
       const isEcg = mode === "ecg";
@@ -1240,7 +1277,7 @@
         ? "Electrocardiograma (ECG)"
         : "Tendencia de Ritmo Cardíaco";
       document.getElementById("ecgChartSub").textContent = isEcg
-        ? "Trazo sincronizado con ESP32 en tiempo real"
+        ? (state.mode === "firebase" ? "Onda real filtrada (LMS 60 Hz · 125 Hz)" : "Trazo simulado de prueba clínica")
         : "Histórico reciente de lpm · Firestore";
     }
 
@@ -1270,6 +1307,7 @@
         ctx.scale(dpr, dpr);
         ctx.clearRect(0, 0, w, h);
 
+        // Cuadrícula clínica
         ctx.strokeStyle = "rgba(148, 163, 184, 0.12)";
         ctx.lineWidth = 1;
         const step = 18;
@@ -1281,25 +1319,93 @@
         }
 
         if (state.chartMode === "ecg") {
-          const activeBpm = state.live.bpm && state.live.bpm > 25 ? state.live.bpm : 72;
-          const beatsPerSec = activeBpm / 60;
-          state.ecgPhase = (state.ecgPhase + beatsPerSec * 0.018) % 100;
+          if (state.mode === "firebase") {
+            // Desplaza muestras reales desde la cola a ~125 Hz (aprox. 2.08 muestras/frame a 60 fps)
+            if (state.ecgIncomingQueue.length > 0) {
+              const qLen = state.ecgIncomingQueue.length;
+              const rate = qLen > 300 ? 3.5 : qLen > 200 ? 2.4 : qLen < 40 ? 1.4 : (state.ecgFs / 60);
+              state.ecgFrameAccum += rate;
+              const count = Math.floor(state.ecgFrameAccum);
+              state.ecgFrameAccum -= count;
 
-          ctx.strokeStyle = "#FB7185";
-          ctx.lineWidth = 2.1;
-          ctx.lineJoin = "round";
-          ctx.beginPath();
+              for (let k = 0; k < count && state.ecgIncomingQueue.length > 0; k++) {
+                state.realEcgBuffer.push(state.ecgIncomingQueue.shift());
+                if (state.realEcgBuffer.length > REAL_ECG_WINDOW) {
+                  state.realEcgBuffer.shift();
+                }
+              }
+            }
 
-          const samples = Math.floor(w / 2);
-          for (let i = 0; i <= samples; i++) {
-            const x = (i / samples) * w;
-            const localPhase = state.ecgPhase + (i / samples) * 2.2;
-            const amp = state.live.electrodoSuelto === 1 ? (Math.random() - 0.5) * 0.15 : pqrstWave(localPhase);
-            const y = h * 0.56 - amp * (h * 0.34);
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
+            if (!state.hasRealEcg) {
+              // Línea base mientras llega el primer paquete real con ecgWave
+              ctx.strokeStyle = "rgba(251, 113, 133, 0.35)";
+              ctx.lineWidth = 1.5;
+              ctx.beginPath();
+              ctx.moveTo(0, h * 0.52);
+              ctx.lineTo(w, h * 0.52);
+              ctx.stroke();
+
+              ctx.fillStyle = "rgba(148, 163, 184, 0.85)";
+              ctx.font = "600 11px Inter, sans-serif";
+              ctx.textAlign = "center";
+              ctx.fillText("Esperando muestras reales (ecgWave) del ESP32...", w / 2, h * 0.42);
+            } else {
+              // Autoescala vertical suave según la amplitud real de la señal
+              let maxAbs = 150;
+              for (let i = 0; i < state.realEcgBuffer.length; i++) {
+                const a = Math.abs(state.realEcgBuffer[i]);
+                if (a > maxAbs) maxAbs = a;
+              }
+              state.ecgScale += (maxAbs * 1.18 - state.ecgScale) * 0.08;
+
+              ctx.strokeStyle = "#FB7185";
+              ctx.lineWidth = 2.0;
+              ctx.lineJoin = "round";
+              ctx.beginPath();
+
+              const len = state.realEcgBuffer.length;
+              for (let i = 0; i < len; i++) {
+                const x = (i / (len - 1)) * w;
+                const norm = Math.max(-1, Math.min(1, state.realEcgBuffer[i] / state.ecgScale));
+                const y = h * 0.52 - norm * (h * 0.42);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+              }
+              ctx.stroke();
+
+              // Etiqueta de señal real en la esquina
+              ctx.fillStyle = "rgba(16, 185, 129, 0.9)";
+              ctx.font = "700 10px Inter, sans-serif";
+              ctx.textAlign = "left";
+              ctx.fillText(`SEÑAL REAL · ${state.ecgFs} Hz`, 10, 16);
+            }
+          } else {
+            // Modo Simulación Demo
+            const activeBpm = state.live.bpm && state.live.bpm > 25 ? state.live.bpm : 72;
+            const beatsPerSec = activeBpm / 60;
+            state.ecgPhase = (state.ecgPhase + beatsPerSec * 0.018) % 100;
+
+            ctx.strokeStyle = "#FB7185";
+            ctx.lineWidth = 2.1;
+            ctx.lineJoin = "round";
+            ctx.beginPath();
+
+            const samples = Math.floor(w / 2);
+            for (let i = 0; i <= samples; i++) {
+              const x = (i / samples) * w;
+              const localPhase = state.ecgPhase + (i / samples) * 2.2;
+              const amp = state.live.electrodoSuelto === 1 ? (Math.random() - 0.5) * 0.15 : pqrstWave(localPhase);
+              const y = h * 0.56 - amp * (h * 0.34);
+              if (i === 0) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            ctx.fillStyle = "rgba(251, 191, 36, 0.9)";
+            ctx.font = "700 10px Inter, sans-serif";
+            ctx.textAlign = "left";
+            ctx.fillText("SIMULACIÓN DEMO", 10, 16);
           }
-          ctx.stroke();
         } else {
           drawLineSeries(ctx, state.bpmSeries, w, h, 45, 140, "#38BDF8", 2.2);
         }
