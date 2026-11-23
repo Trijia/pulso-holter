@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>PULSO / SALUD CONECTADA · Holter Portátil IoT</title>
+  <title>PULSO / SALUD CONECTADA · Monitor IoT académico</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -82,7 +82,7 @@
           </div>
           <h1 id="authTitle" class="text-2xl font-extrabold tracking-tight text-slate-900">Iniciar sesión</h1>
           <p id="authSubtitle" class="text-sm text-slate-500 mt-1 leading-relaxed">
-            Acceso clínico para cuidadores y monitoreo directo desde ESP32 en tiempo real.
+            Acceso a monitoreo experimental desde ESP32, sin finalidad diagnóstica.
           </p>
         </div>
 
@@ -141,15 +141,15 @@
         </form>
 
         <div class="mt-3 flex items-center justify-between text-[11px] text-slate-500 bg-slate-100/90 px-3 py-2 rounded-xl border border-slate-200/70">
-          <span>Demo rápida: <b>cuidador@pulso.pe</b></span>
+          <span>Prueba local: sin acceso a datos reales</span>
           <button type="button" onclick="fillDemoAndEnter()" class="font-bold text-blue-600 hover:underline">
-            Entrada rápida →
+            Abrir simulación →
           </button>
         </div>
       </div>
 
       <p class="text-[11px] text-center text-slate-400 mt-4 leading-relaxed">
-        Arquitectura directa ESP32 → Firebase Firestore · Señal ECG real AD8232.
+        Prototipo académico · ESP32 → Firestore · Sin finalidad diagnóstica.
       </p>
     </section>
 
@@ -165,14 +165,14 @@
             </div>
             <div class="min-w-0">
               <div class="flex items-center gap-1.5">
-                <h2 id="headerPatientName" class="text-sm font-bold text-slate-900 truncate">María López</h2>
-                <span id="headerPatientMeta" class="text-xs text-slate-500 tabular-nums shrink-0">· 74a</span>
+                <h2 id="headerPatientName" class="text-sm font-bold text-slate-900 truncate">Paciente</h2>
+                <span id="headerPatientMeta" class="text-xs text-slate-500 tabular-nums shrink-0"></span>
               </div>
               <div class="flex items-center gap-1.5 mt-0.5">
                 <span class="relative flex h-2 w-2 text-emerald-500">
-                  <span id="connDotPing" class="live-dot w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+                  <span id="connDotPing" class="w-2 h-2 rounded-full bg-amber-500 inline-block"></span>
                 </span>
-                <span id="connStatusText" class="text-[11px] font-semibold text-emerald-700 truncate">Conectado · Firebase</span>
+                <span id="connStatusText" class="text-[11px] font-semibold text-amber-700 truncate">Esperando transmisión</span>
                 <span id="cloudSyncBadge" class="text-[10px] font-semibold px-1.5 py-0.2 rounded bg-slate-100 text-slate-500">Nube</span>
               </div>
             </div>
@@ -231,26 +231,26 @@
             <form id="patientForm" onsubmit="savePatientData(event)" class="space-y-3">
               <div>
                 <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre completo</label>
-                <input id="patName" type="text" required value="María López"
+                <input id="patName" type="text" required value=""
                   class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500" />
               </div>
 
               <div class="grid grid-cols-2 gap-2.5">
                 <div>
                   <label class="block text-xs font-semibold text-slate-700 mb-1">DNI / Documento</label>
-                  <input id="patDni" type="text" required value="08452190"
+                  <input id="patDni" type="text" required value=""
                     class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm tabular-nums text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500" />
                 </div>
                 <div>
                   <label class="block text-xs font-semibold text-slate-700 mb-1">Edad (años)</label>
-                  <input id="patAge" type="number" min="1" max="120" required value="74"
+                  <input id="patAge" type="number" min="1" max="120" required value=""
                     class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm tabular-nums text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500" />
                 </div>
               </div>
 
               <div>
                 <label class="block text-xs font-semibold text-slate-700 mb-1">Peso aproximado (kg)</label>
-                <input id="patWeight" type="number" step="0.1" min="20" max="250" value="62.5"
+                <input id="patWeight" type="number" step="0.1" min="20" max="250" value=""
                   class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm tabular-nums text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500" />
               </div>
 
@@ -265,7 +265,7 @@
                 </button>
               </div>
               <p id="patientSavedMsg" class="text-xs font-semibold text-emerald-600 hidden">
-                ✓ Datos del paciente guardados en Firestore.
+                Datos del paciente guardados.
               </p>
             </form>
           </div>
@@ -279,7 +279,7 @@
                   <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
                   <div>
                     <div class="text-xs font-bold text-slate-800">Sensor ECG · AD8232</div>
-                    <div class="text-[11px] text-slate-500">Filtro LMS 60 Hz · Onda real 125 Hz</div>
+                    <div class="text-[11px] text-slate-500">Filtro LMS 60 Hz · Telemetría a 125 Hz</div>
                   </div>
                 </div>
                 <span id="diagEcgBadge" class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800">Activo</span>
@@ -293,7 +293,7 @@
                     <div class="text-[11px] text-slate-500">Bus digital 1-Wire (°C)</div>
                   </div>
                 </div>
-                <span class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-teal-100 text-teal-800">Listo</span>
+                <span id="diagTempBadge" class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800">Sin lectura</span>
               </div>
             </div>
           </div>
@@ -337,11 +337,11 @@
               </div>
               <div class="min-w-0 flex-1">
                 <div class="flex items-center justify-between gap-2">
-                  <span id="alertTitle" class="text-xs font-extrabold uppercase tracking-wide">Signos estables</span>
+                  <span id="alertTitle" class="text-xs font-extrabold uppercase tracking-wide">Esperando datos</span>
                   <span id="lastUpdateClock" class="text-[11px] font-semibold tabular-nums opacity-75">--:--:--</span>
                 </div>
                 <p id="alertMessage" class="text-xs mt-0.5 leading-snug opacity-90">
-                  Frecuencia cardíaca y temperatura dentro de rangos normales. Electrodos adheridos.
+                  Esperando datos actuales del ESP32. Las mediciones son experimentales.
                 </p>
               </div>
             </div>
@@ -351,7 +351,7 @@
           <div id="simScenarioBar" class="hidden bg-amber-50/90 border border-amber-200/90 rounded-2xl p-2.5">
             <div class="flex items-center justify-between mb-1.5 px-0.5">
               <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-800">Escenario de prueba (Simulación)</span>
-              <span class="text-[10px] font-medium text-amber-700">Demo clínica</span>
+              <span class="text-[10px] font-medium text-amber-700">Prueba no clínica</span>
             </div>
             <div class="grid grid-cols-4 gap-1.5">
               <button type="button" onclick="setSimScenario('normal')" id="scen-normal"
@@ -389,7 +389,7 @@
                 <span class="text-xs font-semibold text-slate-400">lpm</span>
               </div>
               <div class="mt-1.5 flex items-center justify-between">
-                <span id="bpmStatusTag" class="text-[11px] font-semibold text-emerald-600">Normal (60–90)</span>
+                <span id="bpmStatusTag" class="text-[11px] font-semibold text-emerald-600">Umbral de prueba: 90 lpm</span>
                 <span class="text-[10px] font-mono text-slate-400">ECG</span>
               </div>
             </div>
@@ -408,7 +408,7 @@
                 <span class="text-xs font-semibold text-slate-400">°C</span>
               </div>
               <div class="mt-1.5 flex items-center justify-between">
-                <span id="tempStatusTag" class="text-[11px] font-semibold text-teal-600">Normotermia</span>
+                <span id="tempStatusTag" class="text-[11px] font-semibold text-teal-600">Lectura superficial</span>
                 <span class="text-[10px] font-mono text-slate-400">DS18B20</span>
               </div>
             </div>
@@ -422,7 +422,7 @@
                   <h3 id="ecgChartTitle" class="text-xs font-extrabold uppercase tracking-wider text-slate-800">Electrocardiograma (ECG)</h3>
                   <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-50 text-rose-600">AD8232</span>
                 </div>
-                <p id="ecgChartSub" class="text-[11px] text-slate-400">Onda real filtrada (LMS 60 Hz · 125 Hz)</p>
+                <p id="ecgChartSub" class="text-[11px] text-slate-400">Onda filtrada recibida a 125 Hz</p>
               </div>
 
               <div class="flex items-center bg-slate-100 p-0.5 rounded-lg">
@@ -447,6 +447,10 @@
                   Verifique la adhesión de los parches ECG en el paciente.
                 </p>
               </div>
+              <div id="signalOfflineOverlay" class="absolute inset-0 bg-slate-950/85 hidden flex-col items-center justify-center p-3 text-center">
+                <span class="text-amber-300 text-xs font-bold">Sin datos ECG recientes</span>
+                <p class="text-[11px] text-slate-300 mt-1">Esperando nuevas muestras del dispositivo.</p>
+              </div>
             </div>
           </div>
 
@@ -455,7 +459,7 @@
             <div class="flex items-center justify-between mb-2">
               <div>
                 <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-800">Curva térmica (°C)</h3>
-                <p class="text-[11px] text-slate-400">Rango normal 36.0 °C – 38.0 °C · DS18B20</p>
+                <p class="text-[11px] text-slate-400">Umbrales experimentales 36–38 °C · temperatura superficial</p>
               </div>
               <span id="tempRangePill" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 tabular-nums">--.- °C</span>
             </div>
@@ -464,10 +468,12 @@
             </div>
           </div>
 
+          <p class="text-[10px] text-slate-500 px-1">Prototipo académico: los umbrales no permiten diagnosticar fiebre, arritmias ni sepsis.</p>
+
           <!-- Estado de alertas y disparador al ESP32 -->
           <div class="bg-white rounded-2xl p-3.5 shadow-card border border-slate-100">
             <div class="flex items-center justify-between mb-2.5">
-              <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-800">Alertas clínicas y control</h3>
+              <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-800">Alertas experimentales y control</h3>
               <button type="button" id="triggerAlertBtn" onclick="sendManualAlertESP32()"
                 class="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 active:scale-[0.98] text-white text-[11px] font-bold shadow-xs transition flex items-center gap-1.5">
                 <span>Disparar alerta</span>
@@ -477,11 +483,11 @@
             <div class="grid grid-cols-4 gap-1.5 text-center">
               <div id="flag-tachy" class="p-2 rounded-xl bg-slate-50 border border-slate-200/80">
                 <div class="text-[10px] font-mono text-slate-400">&gt;90</div>
-                <div class="text-[11px] font-bold text-slate-700 mt-0.5 truncate">Taquicardia</div>
+                <div class="text-[11px] font-bold text-slate-700 mt-0.5 truncate">FC alta</div>
               </div>
               <div id="flag-fever" class="p-2 rounded-xl bg-slate-50 border border-slate-200/80">
                 <div class="text-[10px] font-mono text-slate-400">&gt;38°C</div>
-                <div class="text-[11px] font-bold text-slate-700 mt-0.5 truncate">Fiebre</div>
+                <div class="text-[11px] font-bold text-slate-700 mt-0.5 truncate">Temp. alta</div>
               </div>
               <div id="flag-leads" class="p-2 rounded-xl bg-slate-50 border border-slate-200/80">
                 <div class="text-[10px] font-mono text-slate-400">LO±</div>
@@ -489,7 +495,7 @@
               </div>
               <div id="flag-hypo" class="p-2 rounded-xl bg-slate-50 border border-slate-200/80">
                 <div class="text-[10px] font-mono text-slate-400">&lt;36°C</div>
-                <div class="text-[11px] font-bold text-slate-700 mt-0.5 truncate">Hipotermia</div>
+                <div class="text-[11px] font-bold text-slate-700 mt-0.5 truncate">Temp. baja</div>
               </div>
             </div>
             <p id="cmdFeedback" class="text-[11px] text-slate-500 mt-2 hidden"></p>
@@ -502,7 +508,7 @@
             <div class="flex items-center justify-between gap-2">
               <div>
                 <h3 class="text-base font-bold text-slate-900">Historial de mediciones</h3>
-                <p class="text-xs text-slate-500">Guardado en Firestore + dispositivo</p>
+                <p class="text-xs text-slate-500">Historial local; sincronización en Firebase si está disponible</p>
               </div>
               <button type="button" onclick="captureSnapshotNow()"
                 class="px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition shrink-0">
@@ -565,164 +571,218 @@
       console.warn("Firebase no inicializado:", e);
     }
 
-    // ==================== ESTADO ====================
-    const REAL_ECG_WINDOW = 250; // 2.0 s a 125 Hz
+    // ==================== ESTADO Y ALMACENAMIENTO POR CUENTA ====================
+    const REAL_ECG_WINDOW = 250; // 2 s con fs=125 Hz (telemetría ESP32)
+    const ECG_QUEUE_MAX = 500;   // Máximo 4 s en espera, evita un trazo demasiado atrasado
     const STORAGE_KEYS = {
-      mode: "pulso_mode_v2",
-      patient: "pulso_patient_v1",
-      history: "pulso_history_v1",
-      sound: "pulso_sound_v1"
+      mode: "pulso_mode_v3",
+      patient: "pulso_patient_v3",
+      history: "pulso_history_v3",
+      sound: "pulso_sound_v3"
     };
+
+    function emptyLiveData() {
+      return {
+        bpm: null, temp: null, taquicardia: 0, fiebre: 0,
+        electrodoSuelto: 0, hipotermia: 0, connected: false,
+        tempValidated: false, lastUpdate: null
+      };
+    }
+    function emptyPatient() { return { name: "", dni: "", age: "", weight: "" }; }
 
     const state = {
       authTab: "login",
-      userEmail: "cuidador@pulso.pe",
-      userName: "Cuidador",
+      userId: null,
+      sessionKind: "none", // "firebase" o "demo"
+      userEmail: "",
+      userName: "",
       mode: localStorage.getItem(STORAGE_KEYS.mode) || "firebase",
-      patient: loadPatient(),
-      history: loadHistory(),
+      patient: emptyPatient(),
+      history: [],
       soundEnabled: localStorage.getItem(STORAGE_KEYS.sound) !== "false",
       chartMode: "ecg",
       simScenario: "normal",
       lastSeenSeq: null,
       lastPacketLocalTime: 0,
-      live: {
-        bpm: null,
-        temp: null,
-        taquicardia: 0,
-        fiebre: 0,
-        electrodoSuelto: 0,
-        hipotermia: 0,
-        connected: false,
-        lastUpdate: null
-      },
-      // Buffers de señal ECG real desde ESP32
+      live: emptyLiveData(),
       realEcgBuffer: new Array(REAL_ECG_WINDOW).fill(0),
       hasRealEcg: false,
       ecgIncomingQueue: [],
       ecgFrameAccum: 0,
+      ecgLastRenderMs: 0,
       ecgScale: 250,
       ecgFs: 125,
-
-      bpmSeries: [],
-      tempSeries: [],
+      bpmSeries: [], tempSeries: [],
       ecgPhase: 0,
       lastBeepTime: 0,
       lastAutoLogTime: 0,
       audioCtx: null
     };
 
+    // Importante: NO mezcla información entre cuentas ni entre demo / datos reales.
+    function scopedKey(kind) {
+      return `${STORAGE_KEYS[kind]}_${state.userId || "sin_sesion"}_${state.mode}`;
+    }
     function loadPatient() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEYS.patient);
-        if (raw) return JSON.parse(raw);
+        const v = JSON.parse(localStorage.getItem(scopedKey("patient")) || "null");
+        if (v && typeof v === "object") return { ...emptyPatient(), ...v };
       } catch (_) {}
-      return { name: "María López", dni: "08452190", age: 74, weight: 62.5 };
+      return emptyPatient();
     }
-
     function loadHistory() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEYS.history);
-        if (raw) return JSON.parse(raw);
+        const v = JSON.parse(localStorage.getItem(scopedKey("history")) || "null");
+        if (Array.isArray(v)) return v.slice(0, 60);
       } catch (_) {}
-      return [
-        {
-          id: Date.now() - 1800000,
-          timestamp: new Date(Date.now() - 1800000).toLocaleString("es-PE", { hour12: false }),
-          patientName: "María López",
-          bpm: 74,
-          temp: 36.6,
-          status: "Estable",
-          alertText: "Signos vitales dentro de rangos normales"
-        }
-      ];
+      return []; // Se eliminó el registro ficticio de ejemplo.
     }
-
+    function loadAccountLocalData() {
+      state.patient = loadPatient();
+      state.history = loadHistory();
+    }
     function persistLocal() {
-      localStorage.setItem(STORAGE_KEYS.mode, state.mode);
-      localStorage.setItem(STORAGE_KEYS.patient, JSON.stringify(state.patient));
-      localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(state.history.slice(0, 60)));
-      localStorage.setItem(STORAGE_KEYS.sound, String(state.soundEnabled));
+      try {
+        localStorage.setItem(STORAGE_KEYS.mode, state.mode);
+        localStorage.setItem(STORAGE_KEYS.sound, String(state.soundEnabled));
+        if (state.userId) {
+          localStorage.setItem(scopedKey("patient"), JSON.stringify(state.patient));
+          localStorage.setItem(scopedKey("history"), JSON.stringify(state.history.slice(0, 60)));
+        }
+      } catch (e) { console.warn("No se pudo guardar en el navegador:", e); }
+    }
+    function isFirebaseSession() {
+      return state.sessionKind === "firebase" && state.mode === "firebase" &&
+        cloudReady && !!fbDb && !!fbAuth && !!fbAuth.currentUser &&
+        fbAuth.currentUser.uid === state.userId;
+    }
+    function ownerDoc() {
+      return fbDb.collection("usuarios").doc(fbAuth.currentUser.uid);
+    }
+    function resetMonitoringData() {
+      state.live = emptyLiveData();
+      state.lastSeenSeq = null;
+      state.lastPacketLocalTime = 0;
+      state.hasRealEcg = false;
+      state.ecgIncomingQueue = [];
+      state.realEcgBuffer = new Array(REAL_ECG_WINDOW).fill(0);
+      state.ecgFrameAccum = 0;
+      state.ecgLastRenderMs = 0;
+      state.bpmSeries = [];
+      state.tempSeries = [];
+      state.lastAutoLogTime = 0;
+    }
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, ch => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[ch]));
     }
 
     // ==================== TELEMETRÍA EN TIEMPO REAL (FIRESTORE) ====================
     function startFirestoreTelemetryListener() {
       stopFirestoreTelemetryListener();
-      if (!cloudReady || !fbDb || state.mode !== "firebase") return;
-
-      state.lastSeenSeq = null;
-      state.hasRealEcg = false;
-      state.ecgIncomingQueue = [];
-      state.realEcgBuffer = new Array(REAL_ECG_WINDOW).fill(0);
+      resetMonitoringData();
+      if (!isFirebaseSession()) {
+        evaluateClinicalStatus();
+        renderMetricsAndFlags();
+        return;
+      }
+      setCloudBadge("Esperando", "bg-amber-50 text-amber-700");
+      evaluateClinicalStatus();
+      renderMetricsAndFlags();
 
       telemetryUnsubscribe = fbDb.collection("telemetria").doc("en_vivo").onSnapshot(
         (doc) => {
-          if (state.mode !== "firebase") return;
-          if (!doc.exists) {
+          if (!isFirebaseSession()) return;
+          if (!doc.exists || (doc.metadata && doc.metadata.fromCache)) {
             state.live.connected = false;
+            setCloudBadge("Sin datos actuales", "bg-amber-50 text-amber-700");
             evaluateClinicalStatus();
+            renderMetricsAndFlags();
             return;
           }
 
-          const d = doc.data();
-          const bpm = d.bpm !== undefined && d.bpm !== null ? Number(d.bpm) : null;
-          const temp = d.temp !== undefined && d.temp !== null ? Number(d.temp) : null;
-          const seq = d.seq !== undefined ? Number(d.seq) : null;
-
-          const isFreshPacket = (seq !== null && seq !== state.lastSeenSeq);
-          if (isFreshPacket || state.lastSeenSeq === null) {
-            if (isFreshPacket) {
-              state.lastPacketLocalTime = Date.now();
-              state.live.connected = true;
-            }
+          const d = doc.data() || {};
+          const seq = Number(d.seq);
+          if (!Number.isFinite(seq) || d.seq === undefined || d.seq === null) {
+            state.live.connected = false;
+            setCloudBadge("Falta seq", "bg-amber-50 text-amber-700");
+            evaluateClinicalStatus();
+            renderMetricsAndFlags();
+            return;
+          }
+          // Primera lectura de Firestore no significa que el ESP32 esté en línea:
+          // podría ser un documento escrito hace horas.
+          if (state.lastSeenSeq === null) {
             state.lastSeenSeq = seq;
+            return; // Esperar una NUEVA secuencia emitida después de iniciar el listener.
           }
+          if (seq === state.lastSeenSeq) return; // Repetición o snapshot de metadatos.
 
-          // Procesar onda real enviada por el ESP32
-          if (d.ecgFs) state.ecgFs = Number(d.ecgFs) || 125;
-          if (typeof d.ecgWave === "string" && d.ecgWave.length > 0) {
-            const samples = d.ecgWave.split(",").map(Number).filter(Number.isFinite);
-            if (samples.length > 0) {
-              if (!state.hasRealEcg) {
-                state.realEcgBuffer = samples.slice(-REAL_ECG_WINDOW);
-                while (state.realEcgBuffer.length < REAL_ECG_WINDOW) {
-                  state.realEcgBuffer.unshift(0);
-                }
-                state.hasRealEcg = true;
-              } else if (isFreshPacket) {
-                state.ecgIncomingQueue.push(...samples);
-                if (state.ecgIncomingQueue.length > REAL_ECG_WINDOW * 2) {
-                  state.ecgIncomingQueue = state.ecgIncomingQueue.slice(-REAL_ECG_WINDOW);
-                }
-              }
-            }
-          }
-
-          state.live.bpm = Number.isFinite(bpm) ? bpm : null;
-          state.live.temp = Number.isFinite(temp) ? temp : null;
-          state.live.taquicardia = Number(d.taquicardia || 0) ? 1 : (bpm !== null && bpm > 90 ? 1 : 0);
-          state.live.fiebre = Number(d.fiebre || 0) ? 1 : (temp !== null && temp > 38.0 ? 1 : 0);
-          state.live.electrodoSuelto = Number(d.electrodoSuelto || 0) ? 1 : 0;
-          state.live.hipotermia = Number(d.hipotermia || 0) ? 1 : (temp !== null && temp < 36.0 ? 1 : 0);
+          state.lastSeenSeq = seq;
+          state.lastPacketLocalTime = Date.now();
+          state.live.connected = true;
           state.live.lastUpdate = new Date();
 
-          if (state.live.bpm !== null && state.live.bpm > 0) pushSeries(state.bpmSeries, state.live.bpm, 36);
-          if (state.live.temp !== null) pushSeries(state.tempSeries, state.live.temp, 36);
+          function numOrNull(v) {
+            if (v === undefined || v === null || v === "") return null;
+            const n = Number(v);
+            return Number.isFinite(n) ? n : null;
+          }
+          const bpm = numOrNull(d.bpm);
+          const temp = numOrNull(d.temp);
+          const leadsOff = Number(d.electrodoSuelto || 0) ? 1 : 0;
+          const tempFlagProvided = d.tempValida !== undefined && d.tempValida !== null;
+          const tempValid = !tempFlagProvided || d.tempValida === true || d.tempValida === 1;
 
-          setCloudBadge("Nube ✓", "bg-emerald-50 text-emerald-700");
+          state.live.electrodoSuelto = leadsOff;
+          state.live.bpm = !leadsOff && bpm !== null && bpm > 0 && bpm <= 300 ? bpm : null;
+          state.live.temp = tempValid && temp !== null && temp > 20 && temp < 45 ? temp : null;
+          // El firmware actual NO reporta la validez del sensor.
+          // El indicador 'no verificada' debe mantenerse hasta incorporar tempValida.
+          state.live.tempValidated = tempFlagProvided && tempValid && state.live.temp !== null;
+          state.live.taquicardia = state.live.bpm !== null &&
+            (Number(d.taquicardia || 0) !== 0 || state.live.bpm > 90) ? 1 : 0;
+          state.live.fiebre = state.live.temp !== null &&
+            (Number(d.fiebre || 0) !== 0 || state.live.temp > 38.0) ? 1 : 0;
+          state.live.hipotermia = state.live.temp !== null &&
+            (Number(d.hipotermia || 0) !== 0 || state.live.temp < 36.0) ? 1 : 0;
+
+          const fs = numOrNull(d.ecgFs);
+          if (fs !== null && fs >= 30 && fs <= 500) state.ecgFs = fs;
+          if (!leadsOff && typeof d.ecgWave === "string" && d.ecgWave.length > 0) {
+            const samples = d.ecgWave.split(",").map(Number)
+              .filter(n => Number.isFinite(n) && Math.abs(n) <= 32768);
+            if (samples.length) {
+              state.hasRealEcg = true;
+              state.ecgIncomingQueue.push(...samples);
+              if (state.ecgIncomingQueue.length > ECG_QUEUE_MAX) {
+                state.ecgIncomingQueue.splice(0, state.ecgIncomingQueue.length - ECG_QUEUE_MAX);
+              }
+            }
+          } else if (leadsOff) {
+            state.hasRealEcg = false;
+            state.ecgIncomingQueue = [];
+            state.realEcgBuffer.fill(0);
+          }
+
+          if (state.live.bpm !== null) pushSeries(state.bpmSeries, state.live.bpm, 36);
+          if (state.live.temp !== null) pushSeries(state.tempSeries, state.live.temp, 36);
+          setCloudBadge("Datos recientes ✓", "bg-emerald-50 text-emerald-700");
           maybeAutoLog(state.live.bpm, state.live.temp);
           evaluateClinicalStatus();
           renderMetricsAndFlags();
         },
         (err) => {
-          console.warn("Error leyendo telemetria/en_vivo:", err);
+          console.warn("Error leyendo telemetría:", err);
           state.live.connected = false;
-          setCloudBadge("Sin red", "bg-amber-50 text-amber-700");
+          setCloudBadge(err.code === "permission-denied" ? "Permiso denegado" : "Error Firestore",
+            "bg-rose-50 text-rose-700");
           evaluateClinicalStatus();
+          renderMetricsAndFlags();
         }
       );
     }
-
     function stopFirestoreTelemetryListener() {
       if (telemetryUnsubscribe) {
         telemetryUnsubscribe();
@@ -730,64 +790,59 @@
       }
     }
 
-    // ==================== PACIENTES E HISTORIAL EN FIRESTORE ====================
+    // ==================== PACIENTES E HISTORIAL AISLADOS POR UID ====================
+    // Las rutas telemetria/en_vivo y telemetria/comandos se mantienen intactas
+    // para no romper el firmware ESP32 existente.
     async function syncPatientToCloud() {
-      if (!cloudReady || !fbDb) return;
+      if (!isFirebaseSession()) return false;
       try {
-        await fbDb.collection("pacientes").doc("actual").set({
+        await ownerDoc().collection("configuracion").doc("paciente").set({
           ...state.patient,
-          updatedBy: state.userEmail,
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge: true });
-        setCloudBadge("Nube ✓", "bg-emerald-50 text-emerald-700");
+        setCloudBadge("Perfil guardado ✓", "bg-emerald-50 text-emerald-700");
+        return true;
       } catch (err) {
-        console.warn("Error guardando paciente:", err);
-        setCloudBadge("Local", "bg-amber-50 text-amber-700");
+        console.warn("No se pudo guardar el paciente:", err);
+        setCloudBadge("Solo local", "bg-amber-50 text-amber-700");
+        return false;
       }
     }
-
     async function loadPatientFromCloud() {
-      if (!cloudReady || !fbDb) return;
+      if (!isFirebaseSession()) return;
       try {
-        const doc = await fbDb.collection("pacientes").doc("actual").get();
+        const doc = await ownerDoc().collection("configuracion").doc("paciente").get();
         if (doc.exists) {
           const d = doc.data();
-          state.patient = {
-            name: d.name || state.patient.name,
-            dni: d.dni || state.patient.dni,
-            age: d.age || state.patient.age,
-            weight: d.weight || state.patient.weight
+          state.patient = { ...emptyPatient(),
+            name: d.name || "", dni: d.dni || "", age: d.age || "", weight: d.weight || ""
           };
           persistLocal();
           hydratePatientForm();
           renderPatientHeader();
         }
-      } catch (_) {}
+      } catch (err) { console.warn("No se pudo cargar perfil:", err); }
     }
-
     async function saveHistoryEntryToCloud(entry) {
-      if (!cloudReady || !fbDb) return;
+      if (!isFirebaseSession()) return;
       try {
-        await fbDb.collection("mediciones").add({
+        await ownerDoc().collection("mediciones").add({
           ...entry,
-          userEmail: state.userEmail,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-      } catch (_) {}
+      } catch (err) { console.warn("No se guardó el historial en Firebase:", err); }
     }
-
     async function loadHistoryFromCloud() {
-      if (!cloudReady || !fbDb) return;
+      if (!isFirebaseSession()) return;
       try {
-        const snap = await fbDb.collection("mediciones").orderBy("id", "desc").limit(30).get();
+        const snap = await ownerDoc().collection("mediciones")
+          .orderBy("id", "desc").limit(30).get();
         if (!snap.empty) {
-          const items = [];
-          snap.forEach(doc => items.push(doc.data()));
-          state.history = items;
+          state.history = snap.docs.map(doc => doc.data());
           persistLocal();
           renderHistory();
         }
-      } catch (_) {}
+      } catch (err) { console.warn("No se pudo cargar historial:", err); }
     }
 
     function setCloudBadge(text, cls) {
@@ -812,7 +867,7 @@
       document.getElementById("authTitle").textContent = isReg ? "Crear cuenta" : "Iniciar sesión";
       document.getElementById("authSubtitle").textContent = isReg
         ? "Registra una cuenta de cuidador en Firebase para acceder desde cualquier dispositivo."
-        : "Acceso clínico para cuidadores y monitoreo directo desde ESP32 en tiempo real.";
+        : "Acceso a monitoreo experimental desde ESP32, sin finalidad diagnóstica.";
       document.getElementById("authSubmitBtn").textContent = isReg ? "Registrar y entrar" : "Ingresar al panel";
       document.getElementById("authFeedback").classList.add("hidden");
     }
@@ -842,39 +897,46 @@
       const password = document.getElementById("authPassword").value;
       const nameInput = document.getElementById("authName").value.trim();
       const btn = document.getElementById("authSubmitBtn");
-
       document.getElementById("authFeedback").classList.add("hidden");
       btn.disabled = true;
       btn.textContent = state.authTab === "register" ? "Registrando..." : "Verificando...";
-
       try {
-        if (cloudReady && fbAuth) {
-          if (state.authTab === "register") {
-            const cred = await fbAuth.createUserWithEmailAndPassword(email, password);
-            if (nameInput && cred.user) {
-              await cred.user.updateProfile({ displayName: nameInput });
-            }
-            state.userName = nameInput || email.split("@")[0];
-          } else {
-            const cred = await fbAuth.signInWithEmailAndPassword(email, password);
-            state.userName = (cred.user && cred.user.displayName) || email.split("@")[0];
-          }
-          state.userEmail = email;
-          await loadPatientFromCloud();
-          await loadHistoryFromCloud();
+        if (state.mode === "sim") {
+          // Demo explícita: no lee ni escribe pacientes ni telemetría en Firebase.
+          state.userId = "demo";
+          state.sessionKind = "demo";
+          state.userEmail = "demo@local";
+          state.userName = "Cuidador de demostración";
+          loadAccountLocalData();
           enterMainApp();
-        } else {
-          state.userEmail = email || "cuidador@pulso.pe";
-          state.userName = nameInput || "Cuidador";
-          enterMainApp();
+          return;
         }
+        if (!cloudReady || !fbAuth) {
+          showAuthError("Firebase no está disponible. Revisa Internet o utiliza Simulación Demo.");
+          return;
+        }
+        let cred;
+        if (state.authTab === "register") {
+          cred = await fbAuth.createUserWithEmailAndPassword(email, password);
+          if (nameInput && cred.user) await cred.user.updateProfile({ displayName: nameInput });
+        } else {
+          cred = await fbAuth.signInWithEmailAndPassword(email, password);
+        }
+        state.sessionKind = "firebase";
+        state.userId = cred.user.uid;
+        state.userEmail = cred.user.email || email;
+        state.userName = nameInput || cred.user.displayName || email.split("@")[0];
+        loadAccountLocalData();
+        enterMainApp();
+        // Cargas posteriores a iniciar sesión; nunca durante una sesión demo.
+        await loadPatientFromCloud();
+        await loadHistoryFromCloud();
       } catch (err) {
         let friendly = "No se pudo completar la autenticación.";
-        if (err.code === "auth/email-already-in-use") friendly = "Ese correo ya está registrado. Cambia a 'Iniciar sesión'.";
-        else if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
-          friendly = "Correo o contraseña incorrectos.";
-        } else if (err.code === "auth/weak-password") friendly = "La contraseña debe tener al menos 6 caracteres.";
-        else if (err.code === "auth/invalid-email") friendly = "Ingresa un correo electrónico válido.";
+        if (err.code === "auth/email-already-in-use") friendly = "El correo ya está registrado.";
+        else if (["auth/invalid-credential", "auth/wrong-password", "auth/user-not-found"].includes(err.code)) friendly = "Correo o contraseña incorrectos.";
+        else if (err.code === "auth/weak-password") friendly = "La contraseña es demasiado corta.";
+        else if (err.code === "auth/invalid-email") friendly = "El correo no es válido.";
         else if (err.message) friendly = err.message;
         showAuthError(friendly);
       } finally {
@@ -884,10 +946,13 @@
     }
 
     function fillDemoAndEnter() {
-      document.getElementById("authEmail").value = "cuidador@pulso.pe";
-      document.getElementById("authPassword").value = "123456";
-      state.userEmail = "cuidador@pulso.pe";
-      state.userName = "Cuidador Demo";
+      // NO reutilizar el modo real ni simular que una cuenta demo fue autenticada.
+      state.mode = "sim";
+      state.sessionKind = "demo";
+      state.userId = "demo";
+      state.userEmail = "demo@local";
+      state.userName = "Cuidador de demostración";
+      loadAccountLocalData();
       enterMainApp();
     }
 
@@ -895,26 +960,33 @@
       persistLocal();
       document.getElementById("loginView").classList.add("hidden");
       document.getElementById("mainApp").classList.remove("hidden");
-      document.getElementById("caregiverLabel").textContent = `Sesión: ${state.userName} (${state.userEmail})`;
+      document.getElementById("caregiverLabel").textContent =
+        `Sesión: ${state.userName} (${state.sessionKind === "demo" ? "solo simulación" : state.userEmail})`;
       hydratePatientForm();
       renderPatientHeader();
       syncModeUI();
       updateSoundIcon();
       renderHistory();
       switchTab("resumen");
-
-      if (state.mode === "firebase") {
-        startFirestoreTelemetryListener();
-      } else {
-        tickTelemetry();
-      }
+      resetMonitoringData();
+      if (state.mode === "firebase") startFirestoreTelemetryListener();
+      else tickTelemetry();
+      evaluateClinicalStatus();
+      renderMetricsAndFlags();
     }
 
     function logoutApp() {
       stopFirestoreTelemetryListener();
-      if (cloudReady && fbAuth) {
+      if (state.sessionKind === "firebase" && fbAuth) {
         fbAuth.signOut().catch(() => {});
       }
+      state.userId = null;
+      state.sessionKind = "none";
+      state.userEmail = "";
+      state.userName = "";
+      state.patient = emptyPatient();
+      state.history = [];
+      resetMonitoringData();
       document.getElementById("mainApp").classList.add("hidden");
       document.getElementById("loginView").classList.remove("hidden");
     }
@@ -958,22 +1030,39 @@
       };
       persistLocal();
       renderPatientHeader();
-      await syncPatientToCloud();
+      const savedInCloud = await syncPatientToCloud();
       const msg = document.getElementById("patientSavedMsg");
+      msg.textContent = savedInCloud ? "✓ Paciente guardado en Firebase." :
+        "✓ Paciente guardado solo en este navegador.";
       msg.classList.remove("hidden");
       setTimeout(() => msg.classList.add("hidden"), 2500);
     }
 
     function setTelemetryMode(newMode) {
+      if (newMode === "firebase" && state.sessionKind !== "firebase") {
+        alert("Para ver datos reales, cierra la demostración e inicia sesión con Firebase.");
+        return;
+      }
+      if (newMode === state.mode) return;
+      persistLocal(); // Guardar la cuenta y el modo anteriores antes de cambiar.
+      stopFirestoreTelemetryListener();
       state.mode = newMode;
+      loadAccountLocalData();
       persistLocal();
+      hydratePatientForm();
+      renderPatientHeader();
+      renderHistory();
+      resetMonitoringData();
       syncModeUI();
       if (newMode === "firebase") {
         startFirestoreTelemetryListener();
+        loadPatientFromCloud();
+        loadHistoryFromCloud();
       } else {
-        stopFirestoreTelemetryListener();
         tickTelemetry();
       }
+      evaluateClinicalStatus();
+      renderMetricsAndFlags();
     }
 
     function syncModeUI() {
@@ -991,9 +1080,10 @@
         : "py-2 rounded-xl text-xs font-bold border border-slate-200 bg-slate-50 text-slate-700 transition";
 
       document.getElementById("simScenarioBar").classList.toggle("hidden", isFb);
+      document.getElementById("triggerAlertBtn").textContent = isFb ? "Disparar alerta" : "Probar alerta";
       if (state.chartMode === "ecg") {
         document.getElementById("ecgChartSub").textContent = isFb
-          ? "Onda real filtrada (LMS 60 Hz · 125 Hz)"
+          ? "Onda filtrada recibida a 125 Hz"
           : "Trazo simulado de prueba clínica";
       }
     }
@@ -1018,10 +1108,17 @@
         evaluateClinicalStatus();
         renderMetricsAndFlags();
       } else {
-        const active = state.lastPacketLocalTime > 0 && (Date.now() - state.lastPacketLocalTime < 10000);
+        const active = state.lastPacketLocalTime > 0 &&
+          (Date.now() - state.lastPacketLocalTime < 10000);
         if (state.live.connected !== active) {
           state.live.connected = active;
+          if (!active) {
+            state.ecgIncomingQueue = [];
+            state.hasRealEcg = false;
+            setCloudBadge("Datos obsoletos", "bg-amber-50 text-amber-700");
+          }
           evaluateClinicalStatus();
+          renderMetricsAndFlags();
         }
       }
     }
@@ -1049,6 +1146,7 @@
       state.live.electrodoSuelto = leads;
       state.live.hipotermia = hypo;
       state.live.connected = true;
+      state.live.tempValidated = false; // También en simulación: valores sintéticos.
       state.live.lastUpdate = new Date();
 
       pushSeries(state.bpmSeries, state.live.bpm, 36);
@@ -1064,59 +1162,74 @@
     // ==================== EVALUACIÓN CLÍNICA ====================
     function evaluateClinicalStatus() {
       const { bpm, temp, taquicardia, fiebre, electrodoSuelto, hipotermia, connected } = state.live;
-      const alerts = [];
-
-      if (electrodoSuelto === 1) alerts.push("Electrodo suelto (LO±)");
-      if (taquicardia === 1 || (bpm !== null && bpm > 90)) alerts.push(`Taquicardia (${bpm ?? "--"} lpm > 90)`);
-      if (fiebre === 1 || (temp !== null && temp > 38.0)) alerts.push(`Fiebre (${temp ?? "--"} °C > 38.0 °C)`);
-      if (hipotermia === 1 || (temp !== null && temp < 36.0)) alerts.push(`Hipotermia (${temp ?? "--"} °C < 36.0 °C)`);
-
       const banner = document.getElementById("alertBanner");
       const iconBox = document.getElementById("alertIconBox");
       const titleEl = document.getElementById("alertTitle");
       const msgEl = document.getElementById("alertMessage");
       const clockEl = document.getElementById("lastUpdateClock");
+      const dotPing = document.getElementById("connDotPing");
+      const statusText = document.getElementById("connStatusText");
+      const diagEcg = document.getElementById("diagEcgBadge");
+      const signalOffline = document.getElementById("signalOfflineOverlay");
+      const isOffline = state.mode === "firebase" && !connected;
 
       if (state.live.lastUpdate) {
         clockEl.textContent = state.live.lastUpdate.toLocaleTimeString("es-PE", { hour12: false });
+      } else {
+        clockEl.textContent = "--:--:--";
       }
+      signalOffline.classList.toggle("hidden", !isOffline);
+      signalOffline.classList.toggle("flex", isOffline);
+      document.getElementById("leadsOffOverlay").classList.toggle("hidden", isOffline || electrodoSuelto !== 1);
 
-      const dotPing = document.getElementById("connDotPing");
-      const statusText = document.getElementById("connStatusText");
-
-      if (!connected && state.mode === "firebase") {
+      if (isOffline) {
         dotPing.className = "w-2 h-2 rounded-full bg-amber-500 inline-block";
         statusText.className = "text-[11px] font-semibold text-amber-700 truncate";
-        statusText.textContent = "Esperando ESP32 · Firebase";
-      } else {
-        dotPing.className = "live-dot w-2 h-2 rounded-full bg-emerald-500 inline-block";
-        statusText.className = "text-[11px] font-semibold text-emerald-700 truncate";
-        statusText.textContent = state.mode === "firebase" ? "ESP32 En Vivo · Firebase" : "Modo Simulación";
+        statusText.textContent = state.lastSeenSeq === null ?
+          "Esperando ESP32 · Firebase" : "Sin transmisión reciente";
+        banner.className = "rounded-2xl p-3.5 border bg-amber-50 border-amber-300 text-amber-950";
+        iconBox.className = "w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 mt-0.5";
+        iconBox.textContent = "!";
+        titleEl.textContent = "Sin datos en vivo";
+        msgEl.textContent = state.lastSeenSeq === null ?
+          "Esperando un paquete NUEVO del ESP32; la última lectura guardada no demuestra conexión." :
+          "La señal se interrumpió. No interpretar las lecturas previas como mediciones actuales.";
+        diagEcg.textContent = "Sin señal actual";
+        diagEcg.className = "text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800";
+        return;
       }
 
-      if (alerts.length > 0) {
+      dotPing.className = "live-dot w-2 h-2 rounded-full bg-emerald-500 inline-block";
+      statusText.className = "text-[11px] font-semibold text-emerald-700 truncate";
+      statusText.textContent = state.mode === "firebase" ? "ESP32 En Vivo · Firebase" : "SIMULACIÓN · sin hardware";
+      diagEcg.textContent = electrodoSuelto ? "Electrodo suelto" :
+        (state.mode === "sim" ? "Señal simulada" :
+          (state.hasRealEcg ? "Activo" : "Esperando ECG"));
+      diagEcg.className = electrodoSuelto ?
+        "text-[11px] font-bold px-2 py-0.5 rounded-md bg-rose-100 text-rose-800" :
+        "text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800";
+
+      const alerts = [];
+      if (electrodoSuelto) alerts.push("Electrodo desconectado (LO±)");
+      if (taquicardia || (bpm !== null && bpm > 90)) alerts.push(`FC supera umbral (${bpm ?? "--"} lpm > 90)`);
+      if (fiebre || (temp !== null && temp > 38)) alerts.push(`Temperatura supera umbral (${temp ?? "--"} °C > 38)`);
+      if (hipotermia || (temp !== null && temp < 36)) alerts.push(`Temperatura bajo umbral (${temp ?? "--"} °C < 36)`);
+
+      if (alerts.length) {
         banner.className = "rounded-2xl p-3.5 border transition-all bg-rose-50 border-rose-300 text-rose-950 alert-critical-card";
         iconBox.className = "w-8 h-8 rounded-xl bg-rose-600 text-white flex items-center justify-center shrink-0 mt-0.5";
-        iconBox.innerHTML = `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`;
-        titleEl.textContent = "Alerta clínica activa";
+        iconBox.textContent = "!";
+        titleEl.textContent = "Alerta de umbral experimental";
         msgEl.textContent = alerts.join(" · ");
         triggerAlarmBeep();
       } else {
         banner.className = "rounded-2xl p-3.5 border transition-all bg-emerald-50/90 border-emerald-200 text-emerald-900";
         iconBox.className = "w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0 mt-0.5";
-        iconBox.innerHTML = `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>`;
-        titleEl.textContent = "Signos estables";
-        msgEl.textContent = "Frecuencia cardíaca y temperatura dentro de rangos normales. Electrodos adheridos.";
-      }
-
-      document.getElementById("leadsOffOverlay").classList.toggle("hidden", electrodoSuelto !== 1);
-      const diagEcg = document.getElementById("diagEcgBadge");
-      if (electrodoSuelto === 1) {
-        diagEcg.textContent = "Electrodo suelto";
-        diagEcg.className = "text-[11px] font-bold px-2 py-0.5 rounded-md bg-rose-100 text-rose-800";
-      } else {
-        diagEcg.textContent = "Activo";
-        diagEcg.className = "text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800";
+        iconBox.textContent = "✓";
+        titleEl.textContent = "Sin alertas de umbral";
+        msgEl.textContent = state.mode === "sim" ?
+          "Escenario de simulación. No representa datos de un paciente." :
+          "No se superan los umbrales configurados. Esto no excluye problemas clínicos.";
       }
     }
 
@@ -1126,15 +1239,30 @@
       const bpmEl = document.getElementById("bpmValue");
       const bpmTag = document.getElementById("bpmStatusTag");
       const bpmCard = document.getElementById("bpmCard");
+      const disconnected = state.mode === "firebase" && !state.live.connected;
+      if (disconnected) {
+        const tempDiag = document.getElementById("diagTempBadge");
+        tempDiag.textContent = "Sin datos";
+        tempDiag.className = "text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800";
+        bpmEl.textContent = "--";
+        document.getElementById("bpmStatusTag").textContent = "Sin datos recientes";
+        document.getElementById("tempValue").textContent = "--.-";
+        document.getElementById("tempStatusTag").textContent = "Sin datos recientes";
+        document.getElementById("tempRangePill").textContent = "--.- °C";
+        bpmCard.className = "bg-white rounded-2xl p-3.5 shadow-card border border-slate-100";
+        document.getElementById("tempCard").className = bpmCard.className;
+        ["flag-tachy", "flag-fever", "flag-leads", "flag-hypo"].forEach(id => setFlagStyle(id, false, "rose"));
+        return;
+      }
 
       if (bpm !== null && bpm > 0 && electrodoSuelto !== 1) {
         bpmEl.textContent = bpm;
         if (bpm > 90 || taquicardia === 1) {
-          bpmTag.textContent = "Taquicardia (>90 lpm)";
+          bpmTag.textContent = "FC alta (umbral >90 lpm)";
           bpmTag.className = "text-[11px] font-bold text-rose-600";
           bpmCard.className = "bg-white rounded-2xl p-3.5 shadow-card border-2 border-rose-400 transition-all";
         } else {
-          bpmTag.textContent = "Normal (60–90)";
+          bpmTag.textContent = "No supera 90 lpm";
           bpmTag.className = "text-[11px] font-semibold text-emerald-600";
           bpmCard.className = "bg-white rounded-2xl p-3.5 shadow-card border border-slate-100 transition-all";
         }
@@ -1151,20 +1279,26 @@
       const tempTag = document.getElementById("tempStatusTag");
       const tempPill = document.getElementById("tempRangePill");
       const tempCard = document.getElementById("tempCard");
+      const tempDiag = document.getElementById("diagTempBadge");
+      tempDiag.textContent = temp === null ? "Sin lectura" :
+        (state.mode === "sim" ? "Simulado" :
+          (state.live.tempValidated ? "Lectura informada" : "Sin validez confirmada"));
+      tempDiag.className = "text-[11px] font-bold px-2 py-0.5 rounded-md " +
+        (temp === null ? "bg-rose-100 text-rose-800" : "bg-teal-100 text-teal-800");
 
       if (temp !== null) {
         tempEl.textContent = temp.toFixed(1);
         tempPill.textContent = `${temp.toFixed(1)} °C`;
         if (temp > 38.0 || fiebre === 1) {
-          tempTag.textContent = "Fiebre (>38.0 °C)";
+          tempTag.textContent = "Sobre 38 °C (umbral de prueba)";
           tempTag.className = "text-[11px] font-bold text-rose-600";
           tempCard.className = "bg-white rounded-2xl p-3.5 shadow-card border-2 border-rose-400 transition-all";
         } else if (temp < 36.0 || hipotermia === 1) {
-          tempTag.textContent = "Hipotermia (<36.0 °C)";
+          tempTag.textContent = "Bajo 36 °C (umbral de prueba)";
           tempTag.className = "text-[11px] font-bold text-amber-600";
           tempCard.className = "bg-white rounded-2xl p-3.5 shadow-card border-2 border-amber-400 transition-all";
         } else {
-          tempTag.textContent = "Normotermia";
+          tempTag.textContent = state.live.tempValidated ? "Lectura validada por sensor" : "Validez del sensor no informada";
           tempTag.className = "text-[11px] font-semibold text-teal-600";
           tempCard.className = "bg-white rounded-2xl p-3.5 shadow-card border border-slate-100 transition-all";
         }
@@ -1196,26 +1330,32 @@
       const fb = document.getElementById("cmdFeedback");
       fb.classList.remove("hidden");
       fb.className = "text-[11px] font-semibold text-blue-700 mt-2";
-      fb.textContent = "Enviando alerta al ESP32 vía Firestore...";
-
-      if (state.mode === "firebase" && cloudReady && fbDb) {
-        try {
-          await fbDb.collection("telemetria").doc("comandos").set({
-            alertaManual: true,
-            triggeredBy: state.userEmail,
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-          }, { merge: true });
-          fb.className = "text-[11px] font-semibold text-emerald-700 mt-2";
-          fb.textContent = "✓ Alerta enviada a telemetria/comandos (el ESP32 la ejecutará en ≤2 s).";
-        } catch (err) {
-          fb.className = "text-[11px] font-semibold text-rose-600 mt-2";
-          fb.textContent = "No se pudo enviar el comando a Firestore.";
-        }
-      } else {
+      fb.textContent = "Enviando comando...";
+      if (state.mode === "sim") {
         fb.className = "text-[11px] font-semibold text-amber-800 mt-2";
-        fb.textContent = "✓ Simulación: alerta manual disparada.";
+        fb.textContent = "Simulación: no se envió nada al ESP32.";
+        captureSnapshotNow("Ensayo de alerta manual (simulación)");
+        return;
       }
-      captureSnapshotNow("Alerta manual al ESP32");
+      if (!isFirebaseSession() || !state.live.connected) {
+        fb.className = "text-[11px] font-semibold text-rose-600 mt-2";
+        fb.textContent = "No se envió: inicia sesión y verifica la conexión reciente del ESP32.";
+        return;
+      }
+      try {
+        await fbDb.collection("telemetria").doc("comandos").set({
+          alertaManual: true,
+          triggeredBy: state.userEmail,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+        fb.className = "text-[11px] font-semibold text-amber-800 mt-2";
+        fb.textContent = "✓ Comando registrado en Firebase. Aún NO hay confirmación del buzzer (requiere actualización del ESP32).";
+        captureSnapshotNow("Comando manual escrito en Firestore; ejecución sin confirmar");
+      } catch (err) {
+        console.warn("No se pudo enviar alerta manual:", err);
+        fb.className = "text-[11px] font-semibold text-rose-600 mt-2";
+        fb.textContent = "No se pudo escribir el comando en Firestore. Revisa permisos y conexión.";
+      }
     }
 
     // ==================== ALARMA SONORA ====================
@@ -1277,7 +1417,7 @@
         ? "Electrocardiograma (ECG)"
         : "Tendencia de Ritmo Cardíaco";
       document.getElementById("ecgChartSub").textContent = isEcg
-        ? (state.mode === "firebase" ? "Onda real filtrada (LMS 60 Hz · 125 Hz)" : "Trazo simulado de prueba clínica")
+        ? (state.mode === "firebase" ? "Onda filtrada recibida a 125 Hz" : "Trazo simulado de prueba clínica")
         : "Histórico reciente de lpm · Firestore";
     }
 
@@ -1292,7 +1432,27 @@
       return y;
     }
 
+    function consumeRealEcgQueue() {
+      const now = performance.now();
+      const dt = state.ecgLastRenderMs ? Math.min(100, Math.max(0, now - state.ecgLastRenderMs)) : 0;
+      state.ecgLastRenderMs = now;
+      if (state.mode !== "firebase" || !state.live.connected || !state.hasRealEcg ||
+          !state.ecgIncomingQueue.length) {
+        state.ecgFrameAccum = 0;
+        return;
+      }
+      state.ecgFrameAccum += state.ecgFs * dt / 1000;
+      const count = Math.floor(state.ecgFrameAccum);
+      state.ecgFrameAccum -= count;
+      for (let k = 0; k < count && state.ecgIncomingQueue.length; k++) {
+        state.realEcgBuffer.push(state.ecgIncomingQueue.shift());
+        if (state.realEcgBuffer.length > REAL_ECG_WINDOW) state.realEcgBuffer.shift();
+      }
+    }
+
     function renderCanvases() {
+      // Incluso cuando el usuario consulta BPM, seguimos consumiendo ECG en tiempo real.
+      consumeRealEcgQueue();
       const ecgCanvas = document.getElementById("ecgCanvas");
       if (ecgCanvas && ecgCanvas.offsetWidth > 0) {
         const dpr = window.devicePixelRatio || 1;
@@ -1320,22 +1480,7 @@
 
         if (state.chartMode === "ecg") {
           if (state.mode === "firebase") {
-            // Desplaza muestras reales desde la cola a ~125 Hz (aprox. 2.08 muestras/frame a 60 fps)
-            if (state.ecgIncomingQueue.length > 0) {
-              const qLen = state.ecgIncomingQueue.length;
-              const rate = qLen > 300 ? 3.5 : qLen > 200 ? 2.4 : qLen < 40 ? 1.4 : (state.ecgFs / 60);
-              state.ecgFrameAccum += rate;
-              const count = Math.floor(state.ecgFrameAccum);
-              state.ecgFrameAccum -= count;
-
-              for (let k = 0; k < count && state.ecgIncomingQueue.length > 0; k++) {
-                state.realEcgBuffer.push(state.ecgIncomingQueue.shift());
-                if (state.realEcgBuffer.length > REAL_ECG_WINDOW) {
-                  state.realEcgBuffer.shift();
-                }
-              }
-            }
-
+            // El consumo del búfer ya ocurrió en consumeRealEcgQueue().
             if (!state.hasRealEcg) {
               // Línea base mientras llega el primer paquete real con ecgWave
               ctx.strokeStyle = "rgba(251, 113, 133, 0.35)";
@@ -1377,7 +1522,7 @@
               ctx.fillStyle = "rgba(16, 185, 129, 0.9)";
               ctx.font = "700 10px Inter, sans-serif";
               ctx.textAlign = "left";
-              ctx.fillText(`SEÑAL REAL · ${state.ecgFs} Hz`, 10, 16);
+              ctx.fillText(`ECG ESP32 · ${state.ecgFs} Hz`, 10, 16);
             }
           } else {
             // Modo Simulación Demo
@@ -1461,6 +1606,7 @@
 
     // ==================== HISTORIAL Y REPORTES ====================
     function maybeAutoLog(bpm, temp) {
+      if (state.mode === "firebase" && !state.live.connected) return;
       const now = Date.now();
       if (now - state.lastAutoLogTime < 60000) return;
       if (bpm === null && temp === null) return;
@@ -1469,6 +1615,10 @@
     }
 
     function captureSnapshotNow(customNote) {
+      if (state.mode === "firebase" && !state.live.connected) {
+        alert("No se puede registrar una lectura: el ESP32 no transmite datos recientes.");
+        return;
+      }
       addHistoryItem(state.live.bpm, state.live.temp, customNote || "Registro manual");
       renderHistory();
     }
@@ -1488,7 +1638,7 @@
         patientName: state.patient.name || "Paciente",
         bpm: bpm ?? "--",
         temp: temp !== null && temp !== undefined ? Number(temp).toFixed(1) : "--.-",
-        status: isAlert ? "Alerta" : "Estable",
+        status: isAlert ? "Umbral" : "Sin umbral",
         alertText: note
       };
 
@@ -1511,40 +1661,42 @@
       }
 
       container.innerHTML = state.history.map((item) => {
-        const alert = item.status === "Alerta";
+        const alert = item.status === "Umbral" || item.status === "Alerta";
         return `
           <div class="bg-white rounded-2xl p-3.5 shadow-card border ${alert ? "border-rose-200" : "border-slate-100"} flex items-center justify-between gap-3">
             <div class="min-w-0">
               <div class="flex items-center gap-2">
                 <span class="text-[11px] font-bold px-2 py-0.5 rounded-full ${alert ? "bg-rose-100 text-rose-700" : "bg-emerald-100 text-emerald-700"}">
-                  ${item.status}
+                  ${escapeHtml(item.status)}
                 </span>
-                <span class="text-[11px] text-slate-400 tabular-nums truncate">${item.timestamp}</span>
+                <span class="text-[11px] text-slate-400 tabular-nums truncate">${escapeHtml(item.timestamp)}</span>
               </div>
-              <div class="text-xs font-semibold text-slate-700 mt-1 truncate">${item.patientName} · ${item.alertText}</div>
+              <div class="text-xs font-semibold text-slate-700 mt-1 truncate">${escapeHtml(item.patientName)} · ${escapeHtml(item.alertText)}</div>
             </div>
             <div class="text-right shrink-0 tabular-nums">
-              <div class="text-sm font-extrabold text-slate-900">${item.bpm} <span class="text-[11px] font-semibold text-slate-400">lpm</span></div>
-              <div class="text-xs font-bold text-teal-600">${item.temp} °C</div>
+              <div class="text-sm font-extrabold text-slate-900">${escapeHtml(item.bpm)} <span class="text-[11px] font-semibold text-slate-400">lpm</span></div>
+              <div class="text-xs font-bold text-teal-600">${escapeHtml(item.temp)} °C</div>
             </div>
           </div>`;
       }).join("");
     }
 
-    function buildReportText() {
+    function buildReportText(anonymize = false) {
       const p = state.patient;
       const lines = [
-        "PULSO / SALUD CONECTADA - REPORTE CLÍNICO",
-        `Paciente: ${p.name} | DNI: ${p.dni || "-"} | Edad: ${p.age || "-"} años`,
+        "PULSO / SALUD CONECTADA - MONITOREO EXPERIMENTAL",
+        anonymize ? "Paciente: anónimo (reporte compartido)" :
+          `Paciente: ${p.name || "Sin identificar"} | Edad: ${p.age || "-"} años`,
         `Última lectura: ${state.live.bpm ?? "--"} lpm | ${state.live.temp !== null ? state.live.temp.toFixed(1) : "--.-"} °C`,
         "----------------------------------------",
-        ...state.history.slice(0, 10).map(h => `[${h.timestamp}] ${h.bpm} lpm | ${h.temp} °C | ${h.status}`)
+        ...state.history.slice(0, 10).map(h => `[${h.timestamp}] ${h.bpm} lpm | ${h.temp} °C | ${h.status}`),
+        "Dispositivo académico: valores no validados para decisiones clínicas."
       ];
       return lines.join("\n");
     }
 
     function shareReportWhatsApp() {
-      const text = encodeURIComponent(buildReportText());
+      const text = encodeURIComponent(buildReportText(true));
       window.open(`https://wa.me/?text=${text}`, "_blank", "noopener,noreferrer");
     }
 
